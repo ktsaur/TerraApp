@@ -1,38 +1,71 @@
 package ru.itis.terraapp
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.runtime.getValue
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.itis.terraapp.ui.theme.TerraAppTheme
+import ru.itis.terraapp.auth.utils.AuthManager
+import ru.itis.terraapp.navigation.BottomNavigation
+import ru.itis.terraapp.navigation.NavGraph
+import ru.itis.terraapp.navigation.NavigationManager
+import ru.itis.terraapp.navigation.Routes
+import ru.itis.terraapp.navigation.Screen
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var authManager: AuthManager
+
+    @Inject
+    lateinit var navigationManager: NavigationManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            TerraAppTheme {
-                WelcomeScreen(userName = "ktsaur")
+            val navController = rememberNavController()
+            navigationManager.setNavController(navController)
+            val userId = authManager.getUserId()
+            val startDestination = if (userId != null && userId != -1) {
+                Routes.MAIN_SCREEN
+            } else {
+                Routes.REGISTRATION
             }
+            InitialNavigation(startDestination = startDestination, navController = navController)
         }
     }
 }
 
+@Composable
+fun InitialNavigation(startDestination: String, navController: NavHostController) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
 
+    val showBottomNavigation = currentRoute in listOf(
+        Screen.Graph.route, Screen.MainScreen.route
+    )
+
+    Scaffold(
+        bottomBar = {
+            if (showBottomNavigation) {
+                BottomNavigation(navController = navController)
+            }
+        }
+    ) { padding ->
+        NavGraph(navHostController = navController, startDestination = startDestination)
+    }
+}
+
+
+
+/*
 @Composable
 fun WelcomeScreen(userName: String) {
     Column(
@@ -54,4 +87,4 @@ fun WelcomeScreen(userName: String) {
             modifier = Modifier.padding(top = 8.dp)
         )
     }
-}
+}*/

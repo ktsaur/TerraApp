@@ -2,7 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt.plugin)
+    alias(libs.plugins.hilt)
+//    alias(libs.plugins.google.services)
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
@@ -39,10 +41,12 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
+        viewBinding = true
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.10"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
     packaging {
         resources {
@@ -59,6 +63,7 @@ dependencies {
 
     //Feature
     implementation(project(path=":feature:mainpage"))
+    implementation(project(path=":feature:auth"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -68,7 +73,8 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.material)
+    implementation(libs.collections)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -76,8 +82,27 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    implementation(libs.kotlin.stdlib)
 
-    //hilt
+    implementation(libs.androidx.fragment)
+
+    //Hilt
     implementation(libs.hilt)
+    implementation(libs.hilt.navigation)
     ksp(libs.hilt.compiler)
+
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.converter.gson)
+
+    //Compose Navigation
+    implementation(libs.androidx.navigation)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.androidx.foundation)
+
+    //Room
+    implementation(libs.room)
+    implementation(libs.room.ktx)
+    ksp(libs.room.ksp)
 }

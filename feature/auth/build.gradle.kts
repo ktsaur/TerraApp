@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.itis.terraapp.domain"
+    namespace = "ru.itis.terraapp.auth"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -30,15 +30,21 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+        compose = true
     }
 }
 
 dependencies {
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -49,6 +55,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.collections)
+    implementation(libs.jbcrypt.v04)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

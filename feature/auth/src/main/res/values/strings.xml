@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="registration_title">Registration</string>
+    <string name="username_label">Username</string>
+    <string name="email_label">Email</string>
+    <string name="password_label">Password</string>
+    <string name="register_button">Register</string>
+    <string name="login_button">Login</string>
+    <string name="already_have_account">Already have an account? Log in</string>
+    <string name="error_fill_all_fields">All fields must be filled in!</string>
+    <string name="error_invalid_email">Enter a valid email</string>
+    <string name="error_invalid_password">Password must contain at least 6 characters, letters, and numbers</string>
+    <string name="error_user_already_registered">This user is already registered</string>
+    <string name="success_registration">Registration completed successfully</string>
+    <string name="authorization_title">Authorization</string>
+    <string name="auth_success">Authorization successful</string>
+    <string name="auth_wrong_password">Incorrect password</string>
+    <string name="auth_user_not_found">User not found</string>
+    <string name="fetch_from_api">Fetch from API</string>
+    <string name="fetch_from_db">Fetch from database</string>
+    <string name="email_taken">This email address is taken</string>
+</resources>
