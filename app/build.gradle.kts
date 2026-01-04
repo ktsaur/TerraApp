@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.itis.terraapp.app"
+    namespace = "ru.itis.terraapp"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
