@@ -49,6 +49,7 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.collections)
+    implementation(libs.jbcrypt.v04)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -57,6 +58,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlin.stdlib)
+    implementation(libs.jbcrypt.v04)
 
     implementation(libs.androidx.fragment)
 

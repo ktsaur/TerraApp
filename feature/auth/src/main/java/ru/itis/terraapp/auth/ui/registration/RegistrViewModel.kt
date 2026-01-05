@@ -11,15 +11,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.itis.terraapp.auth.R
-import ru.itis.terraapp.auth.domain.model.User
-import ru.itis.terraapp.auth.domain.repository.UserRepository
 import ru.itis.terraapp.auth.utils.AuthManager
-import ru.itis.terraapp.auth.utils.hashPassword
+import ru.itis.terraapp.domain.usecase.auth.RegisterResult
+import ru.itis.terraapp.domain.usecase.auth.RegisterUserUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistrViewModel @Inject constructor(
-    private val userRepository: UserRepository,
+    private val registerUserUseCase: RegisterUserUseCase,
     private val authManager: AuthManager
 ): ViewModel() {
 
@@ -56,44 +55,31 @@ class RegistrViewModel @Inject constructor(
         val email = _uiState.value.email
         val password = _uiState.value.password
 
-        val hashPassword = hashPassword(password)
-
         viewModelScope.launch {
-            if (username != "" && email != "" && password != "") {
-                val listEmails = userRepository.getAllEmails()
-                if (listEmails?.contains(email) == true) {
-                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.email_taken)))
-                    return@launch
+            when (val result = registerUserUseCase(username, email, password)) {
+                is RegisterResult.Success -> {
+                    authManager.saveUserId(result.userId)
+                    _uiState.update { it.copy(registerResult = true) }
+                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.success_registration)))
+                    _effectFlow.tryEmit(RegistrEffect.NavigateToCurrentTemp)
                 }
-                if(!email.contains("@")) {
+                is RegisterResult.EmptyFields -> {
+                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_fill_all_fields)))
+                }
+                is RegisterResult.InvalidEmail -> {
                     _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_invalid_email)))
-                    return@launch
                 }
-                if (password.length < 6 || !isValidPassword(password = password)) {
+                is RegisterResult.InvalidPassword -> {
                     _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_invalid_password)))
-                    return@launch
                 }
-            } else {
-                _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_fill_all_fields)))
-                return@launch
-            }
-            val user = userRepository.getUserByEmailAndPassword(email = email, password = hashPassword)
-            if (user != null) {
-                _uiState.update { it.copy(registerResult = false) }
-                _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_user_already_registered)))
-            } else {
-                val newUser = User(username = username, email = email, password = hashPassword)
-                val userId = userRepository.insertUser(newUser)
-                authManager.saveUserId(userId)
-                _uiState.update { it.copy(registerResult = true) }
-                _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.success_registration)))
-                _effectFlow.tryEmit(RegistrEffect.NavigateToCurrentTemp)
+                is RegisterResult.EmailTaken -> {
+                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.email_taken)))
+                }
+                is RegisterResult.UserAlreadyExists -> {
+                    _uiState.update { it.copy(registerResult = false) }
+                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_user_already_registered)))
+                }
             }
         }
-    }
-
-    private fun isValidPassword(password: String): Boolean {
-        val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d).+$"
-        return password.matches(passwordPattern.toRegex())
     }
 }
