@@ -1,9 +1,7 @@
-package ru.itis.terraapp.feature.mainscreen.impl.ui.mainScreen
+package ru.itis.terraapp.feature.mainscreen.impl.apiImpl
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -12,8 +10,8 @@ import androidx.navigation.compose.rememberNavController
 import ru.itis.terraapp.feature.mainscreen.api.ui.mainScreen.MainScreenApi
 import ru.itis.terraapp.feature.mainscreen.api.util.MainScreenNavigation
 import ru.itis.terraapp.feature.mainscreen.impl.state.TempDetailsEvent
-import ru.itis.terraapp.feature.mainscreen.impl.ui.CurrentTempRoute
-import ru.itis.terraapp.feature.mainscreen.impl.ui.TempDetailsRoute
+import ru.itis.terraapp.feature.mainscreen.impl.ui.mainScreen.CurrentTempRoute
+import ru.itis.terraapp.feature.mainscreen.impl.ui.weatherScreen.TempDetailsRoute
 import ru.itis.terraapp.feature.mainscreen.impl.viewModel.TempDetailsViewModel
 
 object MainScreenRoutes {

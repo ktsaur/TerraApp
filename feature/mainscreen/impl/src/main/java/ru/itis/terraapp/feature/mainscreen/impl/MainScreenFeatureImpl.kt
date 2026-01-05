@@ -4,8 +4,8 @@ import ru.itis.terraapp.feature.mainscreen.api.MainScreenFeature
 import ru.itis.terraapp.feature.mainscreen.api.ui.mainScreen.MainScreenApi
 import ru.itis.terraapp.feature.mainscreen.api.ui.weatherScreen.WeatherScreenApi
 import ru.itis.terraapp.feature.mainscreen.api.util.MainScreenNavigation
-import ru.itis.terraapp.feature.mainscreen.impl.ui.mainScreen.MainScreenApiImpl
-import ru.itis.terraapp.feature.mainscreen.impl.ui.weatherScreen.WeatherScreenApiImpl
+import ru.itis.terraapp.feature.mainscreen.impl.apiImpl.MainScreenApiImpl
+import ru.itis.terraapp.feature.mainscreen.impl.apiImpl.WeatherScreenApiImpl
 import javax.inject.Inject
 
 class MainScreenFeatureImpl @Inject constructor() : MainScreenFeature {

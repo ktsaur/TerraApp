@@ -1,4 +1,4 @@
-package ru.itis.terraapp.feature.mainscreen.impl.ui
+package ru.itis.terraapp.feature.mainscreen.impl.ui.mainScreen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.OutlinedButton
@@ -22,7 +22,7 @@ import ru.itis.terraapp.feature.mainscreen.impl.viewModel.TempDetailsViewModel
 
 @Composable
 fun CurrentTempRoute(
-    onNavigateToDetails: (String) -> Unit,  // приходит из app
+    onNavigateToDetails: (String) -> Unit,
     viewModel: TempDetailsViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -32,12 +32,10 @@ fun CurrentTempRoute(
         onEvent = viewModel::onEvent
     )
 
-    // Если всё-таки хочешь effects:
     LaunchedEffect(viewModel.effectFlow) {
         viewModel.effectFlow.collect { effect ->
             when (effect) {
                 is TempDetailsEffect.NavigateToTempDetails -> onNavigateToDetails(effect.city)
-                // другие effects обрабатывай здесь или передавай отдельными callbacks
                 else -> {}
             }
         }

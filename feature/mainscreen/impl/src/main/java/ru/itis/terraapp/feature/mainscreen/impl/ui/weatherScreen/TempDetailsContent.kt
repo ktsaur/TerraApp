@@ -1,4 +1,4 @@
-package ru.itis.terraapp.feature.mainscreen.impl.ui
+package ru.itis.terraapp.feature.mainscreen.impl.ui.weatherScreen
 
 import android.content.Context
 import androidx.compose.animation.core.animateFloat
@@ -11,6 +11,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -58,7 +59,7 @@ import java.io.IOException
 
 @Composable
 fun TempDetailsRoute(
-    onNavigateToDetails: (String) -> Unit,  // приходит из app
+    onNavigateToDetails: (String) -> Unit,
     viewModel: TempDetailsViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
@@ -74,9 +75,7 @@ fun TempDetailsRoute(
                 is TempDetailsEffect.ShowToast -> {
                     //показать toast
                 }
-                is TempDetailsEffect.NavigateBack -> {
-                    // Навигация назад обрабатывается через NavController в MainScreenApiImpl
-                }
+                is TempDetailsEffect.NavigateBack -> {}
                 else -> {}
             }
         }
@@ -107,7 +106,7 @@ fun TempDetailsContent(state: WeatherUIState, onEvent: (TempDetailsEvent) -> Uni
         ShimmerScreen()
         return
     }
-    val listForecasts = splitForecast(state.forecast)
+    val tomorrowAndDayAfter = getTomorrowAndDayAfterForecast(state.forecast)
 
     Scaffold(containerColor = Color.Blue) { padding ->
         Column(
@@ -116,22 +115,13 @@ fun TempDetailsContent(state: WeatherUIState, onEvent: (TempDetailsEvent) -> Uni
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-
             TempMainCard(
                 city = state.city,
                 weatherUIState = state
             )
-            ForecastSection(
-                title = stringResource(id = R.string.first_day),
-                forecast = listForecasts[0]
-            )
-            ForecastSection(
-                title = stringResource(id = R.string.second_day),
-                forecast = listForecasts[1]
-            )
-            ForecastSection(
-                title = stringResource(id = R.string.third_day),
-                forecast = listForecasts[2]
+            TomorrowForecastSection(
+                tomorrowForecast = tomorrowAndDayAfter.first,
+                dayAfterForecast = tomorrowAndDayAfter.second
             )
         }
     }
@@ -310,7 +300,7 @@ fun TempMainCard(city: String, weatherUIState: WeatherUIState) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 68.dp, bottom = 40.dp),
+                .padding(vertical = 24.dp, horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -320,7 +310,7 @@ fun TempMainCard(city: String, weatherUIState: WeatherUIState) {
                     text = stringResource(id = R.string.temp_in_city, city),
                     style = TextStyle(
                         color = Color.DarkGray,
-                        fontSize = 26.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Normal
                     )
                 )
@@ -328,19 +318,19 @@ fun TempMainCard(city: String, weatherUIState: WeatherUIState) {
                     text = "${weatherUIState.weather.currentTemp.toInt()}°C",
                     style = TextStyle(
                         color = Color.DarkGray,
-                        fontSize = 56.sp,
+                        fontSize = 42.sp,
                         fontWeight = FontWeight.SemiBold
                     ),
-                    modifier = Modifier.padding(top = 20.dp)
+                    modifier = Modifier.padding(top = 12.dp)
                 )
                 Text(
                     text = weatherUIState.weather.weatherDescription,
                     style = TextStyle(
                         color = Color.DarkGray,
-                        fontSize = 20.sp,
+                        fontSize = 16.sp,
                         fontWeight = FontWeight.Light
                     ),
-                    modifier = Modifier.padding(top = 16.dp)
+                    modifier = Modifier.padding(top = 8.dp)
                 )
             }
         }
@@ -397,15 +387,129 @@ fun ErrorAlertDialog(ex: Throwable, context: Context, onConfirmBack: () -> Unit)
     )
 }
 
-private fun splitForecast(forecast: List<Forecast>): List<List<Forecast>> {
-    val indicesOfMidnight = forecast.mapIndexedNotNull { index, forecastModel ->
+/**
+ * Получает прогноз на завтра и послезавтра на 12:00
+ * @return Pair<Forecast для завтра, Forecast для послезавтра>
+ */
+private fun getTomorrowAndDayAfterForecast(forecast: List<Forecast>): Pair<Forecast?, Forecast?> {
+    // Находим индексы полуночи (00:00) для разделения дней
+    val midnightIndices = forecast.mapIndexedNotNull { index, forecastModel ->
         if (forecastModel.dt == "00:00") index else null
     }
-    return listOf(
-        forecast.take(indicesOfMidnight[0]),
-        forecast.drop(indicesOfMidnight[0]).take(indicesOfMidnight[1] - indicesOfMidnight[0]),
-        forecast.drop(indicesOfMidnight[1]).take(indicesOfMidnight[2] - indicesOfMidnight[1])
-    )
+    
+    if (midnightIndices.size < 2) {
+        // Если нет достаточно данных, возвращаем null
+        return Pair(null, null)
+    }
+    
+    // Первый день - от начала до первой полуночи
+    // Второй день - от первой полуночи до второй
+    // Третий день - от второй полуночи до третьей
+    
+    val tomorrowStartIndex = midnightIndices[0]
+    val tomorrowEndIndex = if (midnightIndices.size > 1) midnightIndices[1] else forecast.size
+    val dayAfterStartIndex = if (midnightIndices.size > 1) midnightIndices[1] else forecast.size
+    val dayAfterEndIndex = if (midnightIndices.size > 2) midnightIndices[2] else forecast.size
+    
+    val tomorrowForecast = forecast.subList(tomorrowStartIndex, tomorrowEndIndex)
+    val dayAfterForecast = forecast.subList(dayAfterStartIndex, dayAfterEndIndex)
+    
+    // Ищем температуру на 12:00 для каждого дня
+    val tomorrowAt12 = tomorrowForecast.find { it.dt == "12:00" }
+    val dayAfterAt12 = dayAfterForecast.find { it.dt == "12:00" }
+    
+    return Pair(tomorrowAt12, dayAfterAt12)
+}
+
+@Composable
+fun TomorrowForecastSection(
+    tomorrowForecast: Forecast?,
+    dayAfterForecast: Forecast?
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp)
+    ) {
+        Column {
+            Text(
+                text = stringResource(id = R.string.forecast_tomorrow_day_after),
+                style = TextStyle(
+                    color = Color.DarkGray,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(12.dp),
+                elevation = CardDefaults.elevatedCardElevation(6.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    // Блок "Завтра"
+                    if (tomorrowForecast != null) {
+                        TomorrowDayCard(
+                            title = stringResource(id = R.string.tomorrow),
+                            forecast = tomorrowForecast
+                        )
+                    }
+                    
+                    // Блок "Послезавтра"
+                    if (dayAfterForecast != null) {
+                        TomorrowDayCard(
+                            title = stringResource(id = R.string.day_after_tomorrow),
+                            forecast = dayAfterForecast
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun TomorrowDayCard(title: String, forecast: Forecast) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth(0.5f)
+            .padding(horizontal = 8.dp),
+        shape = RoundedCornerShape(10.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.Blue.copy(alpha = 0.1f)
+        )
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = title,
+                style = TextStyle(
+                    color = Color.DarkGray,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            Text(
+                text = "${forecast.temp.toInt()}°C",
+                style = TextStyle(
+                    color = Color.DarkGray,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.SemiBold
+                )
+            )
+        }
+    }
 }
 
 private fun getErrorMessage(ex: Throwable, context: Context): String {

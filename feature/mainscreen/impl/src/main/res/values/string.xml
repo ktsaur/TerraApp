@@ -46,6 +46,9 @@
     <string name="error_unique_colors">Все цвета должны быть уникальными</string>
     <string name="error_values_range">Все значения должны быть в диапазоне от 1 до 100</string>
     <string name="percentage_format">%d%%</string>
+    <string name="forecast_tomorrow_day_after">Прогноз на завтра и послезавтра</string>
+    <string name="tomorrow">Завтра</string>
+    <string name="day_after_tomorrow">Послезавтра</string>
 
 </resources>
 
