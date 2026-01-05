@@ -1,4 +1,4 @@
-package ru.itis.terraapp.data.di.qualifire
+package ru.itis.terraapp.data.di.qualifier
 
 import javax.inject.Qualifier
 

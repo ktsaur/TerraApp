@@ -13,7 +13,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import ru.itis.terraapp.data.database.InceptionDatabase
 import ru.itis.terraapp.data.database.dao.UserDao
 import ru.itis.terraapp.data.database.repository.UserRepositoryImpl
-import ru.itis.terraapp.data.di.qualifire.IoDispatchers
+import ru.itis.terraapp.data.di.qualifier.IoDispatchers
 import ru.itis.terraapp.domain.repositories.UserRepository
 import javax.inject.Singleton
 
@@ -25,6 +25,14 @@ class DataModule {
     fun provideGsonConverterFactory(): GsonConverterFactory {
         return GsonConverterFactory.create()
     }
+
+    /*@Provides
+    fun provideOkHttpCleint(): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(AppIdInterceptor())
+            .addInterceptor(MetricInterceptor())
+            .build()
+    }*/
 
     /*@Provides
     @Singleton
@@ -39,7 +47,6 @@ class DataModule {
             .build()
         return retrofit.create(OpenWeatherApi::class.java)
     }*/
-
 
     @Provides
     @Singleton
@@ -60,13 +67,13 @@ class DataModule {
     ) : UserRepository {
         return UserRepositoryImpl(userDao = userDao, ioDispatchers = ioDispatchers)
     }
+
     @Provides
     @Singleton
     fun provideUserDao(database: InceptionDatabase) : UserDao = database.userDao
 
-    @Provides
     @IoDispatchers
-    fun provideIoDispatcher(): CoroutineDispatcher{
-        return Dispatchers.IO
-    }
+    @Provides
+    @Singleton
+    fun provideIoDispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
