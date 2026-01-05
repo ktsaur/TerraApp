@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "ru.itis.terraapp.domain"
+    namespace = "ru.itis.terraapp.feature.mainscreen.impl"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -15,7 +15,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
     }
 
     buildTypes {
@@ -34,12 +33,25 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+        compose = true
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
 
 dependencies {
+    //Feature API
+    implementation(project(path=":feature:mainscreen:api"))
+    
+    //Core
+    implementation(project(path=":core:base"))
+    implementation(project(path=":core:data"))
+    implementation(project(path=":core:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -50,7 +62,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.collections)
-    implementation(libs.jbcrypt.v04)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -59,7 +70,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlin.stdlib)
-    implementation(libs.jbcrypt.v04)
 
     implementation(libs.androidx.fragment)
 

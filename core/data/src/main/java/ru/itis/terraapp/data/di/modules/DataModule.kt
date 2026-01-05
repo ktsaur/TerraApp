@@ -9,13 +9,23 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.itis.terraapp.data.database.InceptionDatabase
 import ru.itis.terraapp.data.database.dao.UserDao
 import ru.itis.terraapp.data.database.repository.UserRepositoryImpl
 import ru.itis.terraapp.data.di.qualifier.IoDispatchers
+import ru.itis.terraapp.data.remote.OpenWeatherApi
+import ru.itis.terraapp.data.remote.interceptors.AppIdInterceptor
+import ru.itis.terraapp.data.remote.interceptors.MetricInterceptor
+import ru.itis.terraapp.data.repository.ForecastRepositoryImpl
+import ru.itis.terraapp.data.repository.WeatherRepositoryImpl
+import ru.itis.terraapp.domain.repositories.ForecastRepository
 import ru.itis.terraapp.domain.repositories.UserRepository
+import ru.itis.terraapp.domain.repositories.WeatherRepository
 import javax.inject.Singleton
+import ru.itis.terraapp.data.BuildConfig.OPEN_WEATHER_API_URL
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -26,15 +36,15 @@ class DataModule {
         return GsonConverterFactory.create()
     }
 
-    /*@Provides
+    @Provides
     fun provideOkHttpCleint(): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(AppIdInterceptor())
             .addInterceptor(MetricInterceptor())
             .build()
-    }*/
+    }
 
-    /*@Provides
+    @Provides
     @Singleton
     fun provideOpenWeatherApi(
         okHttpClient: OkHttpClient,
@@ -46,7 +56,7 @@ class DataModule {
             .addConverterFactory(converterFactory)
             .build()
         return retrofit.create(OpenWeatherApi::class.java)
-    }*/
+    }
 
     @Provides
     @Singleton
@@ -71,6 +81,22 @@ class DataModule {
     @Provides
     @Singleton
     fun provideUserDao(database: InceptionDatabase) : UserDao = database.userDao
+
+    @Provides
+    @Singleton
+    fun provideWeatherRepository(
+        openWeatherApi: OpenWeatherApi
+    ): WeatherRepository {
+        return WeatherRepositoryImpl(openWeatherApi = openWeatherApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideForecastRepository(
+        openWeatherApi: OpenWeatherApi
+    ): ForecastRepository {
+        return ForecastRepositoryImpl(openWeatherApi = openWeatherApi)
+    }
 
     @IoDispatchers
     @Provides

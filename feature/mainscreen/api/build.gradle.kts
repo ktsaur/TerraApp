@@ -1,13 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.hilt)
-    kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
-    namespace = "ru.itis.terraapp.domain"
+    namespace = "ru.itis.terraapp.feature.mainscreen.api"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
@@ -15,7 +12,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
-
     }
 
     buildTypes {
@@ -34,12 +30,19 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+        compose = true
+    }
     kotlinOptions {
         jvmTarget = "1.8"
     }
 }
 
 dependencies {
+    implementation(project(":core:domain"))
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -59,27 +62,11 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlin.stdlib)
-    implementation(libs.jbcrypt.v04)
 
     implementation(libs.androidx.fragment)
-
-    //Hilt
-    implementation(libs.hilt)
-    implementation(libs.hilt.navigation)
-    ksp(libs.hilt.compiler)
-
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.okhttp)
-    implementation(libs.converter.gson)
 
     //Compose Navigation
     implementation(libs.androidx.navigation)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.foundation)
-
-    //Room
-    implementation(libs.room)
-    implementation(libs.room.ktx)
-    ksp(libs.room.ksp)
 }

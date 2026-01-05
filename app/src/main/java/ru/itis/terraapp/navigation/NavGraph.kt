@@ -11,7 +11,8 @@ import ru.itis.terraapp.auth.ui.authorization.AuthRoute
 import ru.itis.terraapp.auth.ui.authorization.AuthorizationEffect
 import ru.itis.terraapp.auth.ui.registration.RegistrEffect
 import ru.itis.terraapp.auth.ui.registration.RegistrRoute
-import ru.itis.terraapp.mainpage.MainScreen
+import ru.itis.terraapp.feature.mainscreen.api.MainScreenFeature
+import javax.inject.Inject
 
 object Routes {
     const val AUTHORIZATION = "authorization"
@@ -31,7 +32,8 @@ sealed class Screen(val route: String) {
 @Composable
 fun NavGraph(
     navHostController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    mainScreenFeature: MainScreenFeature
 ) {
     val context = LocalContext.current
 
@@ -111,7 +113,7 @@ fun NavGraph(
             )
         }
         composable(route = Screen.MainScreen.route) {
-            MainScreen()
+            mainScreenFeature.mainScreenApi.MainScreen()
         }
     }
 }

@@ -62,7 +62,8 @@ dependencies {
     implementation(project(path=":core:domain"))
 
     //Feature
-    implementation(project(path=":feature:mainpage"))
+    implementation(project(path=":feature:mainscreen:api"))
+    implementation(project(path=":feature:mainscreen:impl"))
     implementation(project(path=":feature:auth"))
 
     implementation(libs.androidx.core.ktx)

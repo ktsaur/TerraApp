@@ -15,6 +15,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField("String", "OPEN_WEATHER_API_URL", "\"https://api.openweathermap.org/data/2.5/\"")
+        buildConfigField("int", "DB_VERSION", "1")
     }
 
     buildTypes {

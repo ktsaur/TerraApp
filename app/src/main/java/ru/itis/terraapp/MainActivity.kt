@@ -11,6 +11,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.itis.terraapp.auth.utils.AuthManager
+import ru.itis.terraapp.feature.mainscreen.api.MainScreenFeature
 import ru.itis.terraapp.navigation.BottomNavigation
 import ru.itis.terraapp.navigation.NavGraph
 import ru.itis.terraapp.navigation.NavigationManager
@@ -26,6 +27,9 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var navigationManager: NavigationManager
+    
+    @Inject
+    lateinit var mainScreenFeature: MainScreenFeature
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,13 +42,21 @@ class MainActivity : ComponentActivity() {
             } else {
                 Routes.REGISTRATION
             }
-            InitialNavigation(startDestination = startDestination, navController = navController)
+            InitialNavigation(
+                startDestination = startDestination,
+                navController = navController,
+                mainScreenFeature = mainScreenFeature
+            )
         }
     }
 }
 
 @Composable
-fun InitialNavigation(startDestination: String, navController: NavHostController) {
+fun InitialNavigation(
+    startDestination: String,
+    navController: NavHostController,
+    mainScreenFeature: MainScreenFeature
+) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -59,7 +71,11 @@ fun InitialNavigation(startDestination: String, navController: NavHostController
             }
         }
     ) { padding ->
-        NavGraph(navHostController = navController, startDestination = startDestination)
+        NavGraph(
+            navHostController = navController,
+            startDestination = startDestination,
+            mainScreenFeature = mainScreenFeature
+        )
     }
 }
 
