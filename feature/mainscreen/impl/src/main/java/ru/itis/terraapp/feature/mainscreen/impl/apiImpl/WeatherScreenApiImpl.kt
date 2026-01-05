@@ -21,6 +21,7 @@ class WeatherScreenApiImpl : WeatherScreenApi {
         
         TempDetailsRoute(
             onNavigateToDetails = { },
+            onNavigateToAttraction = { },
             viewModel = viewModel
         )
     }

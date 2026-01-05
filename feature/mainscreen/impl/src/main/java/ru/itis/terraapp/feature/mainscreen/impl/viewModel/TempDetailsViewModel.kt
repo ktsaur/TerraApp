@@ -15,6 +15,7 @@ import ru.itis.terraapp.data.database.InceptionDatabase
 import ru.itis.terraapp.data.database.entity.QueryHistoryEntity
 import ru.itis.terraapp.data.database.entity.WeatherApiEntity
 import ru.itis.terraapp.data.util.*
+import ru.itis.terraapp.domain.usecase.attractions.GetAttractionsByCityNameUseCase
 import ru.itis.terraapp.domain.usecase.forecast.GetForecastByCityNameUseCase
 import ru.itis.terraapp.domain.usecase.forecast.GetWeatherByCityNameUseCase
 import ru.itis.terraapp.feature.mainscreen.impl.state.TempDetailsEffect
@@ -28,6 +29,7 @@ import kotlin.math.abs
 class TempDetailsViewModel @Inject constructor(
     private val getForecastByCityNameUseCase: GetForecastByCityNameUseCase,
     private val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase,
+    private val getAttractionsByCityNameUseCase: GetAttractionsByCityNameUseCase,
     private val database: InceptionDatabase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(WeatherUIState())
@@ -48,6 +50,11 @@ class TempDetailsViewModel @Inject constructor(
                 getForecast(city = _uiState.value.city)
                 viewModelScope.launch {
                     _effectFlow.emit(TempDetailsEffect.NavigateToTempDetails(city = _uiState.value.city))
+                }
+            }
+            is TempDetailsEvent.AttractionClicked -> {
+                viewModelScope.launch {
+                    _effectFlow.emit(TempDetailsEffect.NavigateToAttractionDetails(event.attractionId))
                 }
             }
         }
@@ -94,12 +101,14 @@ class TempDetailsViewModel @Inject constructor(
         runCatching {
             val forecast = getForecastByCityNameUseCase.invoke(city = city)
             val weather = getWeatherByCityNameUseCase.invoke(city = city)
-            Pair(forecast, weather)
-        }.onSuccess { (forecast, weather) ->
+            val attractions = getAttractionsByCityNameUseCase.invoke(city = city)
+            Triple(forecast, weather, attractions)
+        }.onSuccess { (forecast, weather, attractions) ->
             _uiState.update {
                 it.copy(
                     forecast = forecast,
                     weather = weather,
+                    attractions = attractions,
                     error = null,
                     isLoading = false
                 )

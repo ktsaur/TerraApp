@@ -12,13 +12,17 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
+import coil.compose.AsyncImage
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
@@ -48,6 +52,7 @@ import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import retrofit2.HttpException
+import ru.itis.terraapp.domain.model.Attraction
 import ru.itis.terraapp.domain.model.Forecast
 import ru.itis.terraapp.feature.mainscreen.impl.R
 import ru.itis.terraapp.feature.mainscreen.impl.state.TempDetailsEffect
@@ -60,13 +65,15 @@ import java.io.IOException
 @Composable
 fun TempDetailsRoute(
     onNavigateToDetails: (String) -> Unit,
+    onNavigateToAttraction: (String) -> Unit,
     viewModel: TempDetailsViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
 
     TempDetailsScreen(
         uiState = uiState,
-        onEvent = viewModel::onEvent
+        onEvent = viewModel::onEvent,
+        onNavigateToAttraction = onNavigateToAttraction
     )
 
     LaunchedEffect(viewModel.effectFlow) {
@@ -76,6 +83,9 @@ fun TempDetailsRoute(
                     //показать toast
                 }
                 is TempDetailsEffect.NavigateBack -> {}
+                is TempDetailsEffect.NavigateToAttractionDetails -> {
+                    onNavigateToAttraction(effect.attractionId)
+                }
                 else -> {}
             }
         }
@@ -85,13 +95,22 @@ fun TempDetailsRoute(
 @Composable
 fun TempDetailsScreen(
     uiState: WeatherUIState,
-    onEvent: (TempDetailsEvent) -> Unit
+    onEvent: (TempDetailsEvent) -> Unit,
+    onNavigateToAttraction: (String) -> Unit
 ) {
-    TempDetailsContent(state = uiState, onEvent = onEvent)
+    TempDetailsContent(
+        state = uiState,
+        onEvent = onEvent,
+        onNavigateToAttraction = onNavigateToAttraction
+    )
 }
 
 @Composable
-fun TempDetailsContent(state: WeatherUIState, onEvent: (TempDetailsEvent) -> Unit) {
+fun TempDetailsContent(
+    state: WeatherUIState,
+    onEvent: (TempDetailsEvent) -> Unit,
+    onNavigateToAttraction: (String) -> Unit
+) {
     if (state.error != null) {
         ErrorAlertDialog(
             ex = state.error,
@@ -109,20 +128,59 @@ fun TempDetailsContent(state: WeatherUIState, onEvent: (TempDetailsEvent) -> Uni
     val tomorrowAndDayAfter = getTomorrowAndDayAfterForecast(state.forecast)
 
     Scaffold(containerColor = Color.Blue) { padding ->
-        Column(
+        LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
+                .padding(padding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            TempMainCard(
-                city = state.city,
-                weatherUIState = state
-            )
-            TomorrowForecastSection(
-                tomorrowForecast = tomorrowAndDayAfter.first,
-                dayAfterForecast = tomorrowAndDayAfter.second
-            )
+            item {
+                TempMainCard(
+                    city = state.city,
+                    weatherUIState = state
+                )
+            }
+            item {
+                TomorrowForecastSection(
+                    tomorrowForecast = tomorrowAndDayAfter.first,
+                    dayAfterForecast = tomorrowAndDayAfter.second
+                )
+            }
+            if (state.attractions.isNotEmpty()) {
+                item {
+                    Text(
+                        text = "Достопримечательности",
+                        style = TextStyle(
+                            color = Color.DarkGray,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 16.dp)
+                    )
+                }
+
+                items(
+                    items = state.attractions,
+                    key = { it.id }
+                ) { attraction ->
+                    AttractionCard(
+                        attraction = attraction,
+                        onClick = { onNavigateToAttraction(attraction.id) }
+                    )
+                }
+            }
+            /*item {
+                if (state.attractions.isNotEmpty()) {
+                    AttractionsSection(
+                        attractions = state.attractions,
+                        onAttractionClick = { attractionId ->
+                            onEvent(TempDetailsEvent.AttractionClicked(attractionId))
+                        }
+                    )
+                }
+            }*/
         }
     }
 }
@@ -508,6 +566,85 @@ fun TomorrowDayCard(title: String, forecast: Forecast) {
                     fontWeight = FontWeight.SemiBold
                 )
             )
+        }
+    }
+}
+
+@Composable
+fun AttractionsSection(
+    attractions: List<Attraction>,
+    onAttractionClick: (String) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp)
+    ) {
+        Column {
+            Text(
+                text = "Достопримечательности",
+                style = TextStyle(
+                    color = Color.DarkGray,
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Medium
+                ),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+            
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                items(attractions) { attraction ->
+                    AttractionCard(
+                        attraction = attraction,
+                        onClick = { onAttractionClick(attraction.id) }
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun AttractionCard(
+    attraction: Attraction,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        shape = RoundedCornerShape(12.dp),
+        elevation = CardDefaults.elevatedCardElevation(6.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp)
+        ) {
+            AsyncImage(
+                model = attraction.imageUrl,
+                contentDescription = attraction.name,
+                modifier = Modifier
+                    .size(100.dp)
+                    .aspectRatio(1f)
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 12.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = attraction.name,
+                    style = TextStyle(
+                        color = Color.DarkGray,
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                )
+            }
         }
     }
 }

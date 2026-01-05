@@ -79,28 +79,3 @@ fun InitialNavigation(
     }
 }
 
-
-
-/*
-@Composable
-fun WelcomeScreen(userName: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = "Добро пожаловать!",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 24.dp)
-        )
-        Text(
-            text = "Здравствуйте, $userName!",
-            fontSize = 20.sp,
-            modifier = Modifier.padding(top = 8.dp)
-        )
-    }
-}*/

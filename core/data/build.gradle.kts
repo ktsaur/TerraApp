@@ -17,6 +17,9 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "OPEN_WEATHER_API_URL", "\"https://api.openweathermap.org/data/2.5/\"")
+        // Для реального устройства используйте "http://localhost:3000/" или IP адрес вашего компьютера
+        // Для Android эмулятора используйте "http://10.0.2.2:3000/"
+        buildConfigField("String", "MOCKOON_API_URL", "\"http://10.0.2.2:3000/\"")
         buildConfigField("int", "DB_VERSION", "1")
     }
 

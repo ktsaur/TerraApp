@@ -41,35 +41,6 @@ fun NavGraph(
         navController = navHostController,
         startDestination = startDestination
     ) {
-        /*navigation(
-            route = Routes.BOTTOM_GRAPH,
-            startDestination = Routes.WEATHER_NAVIGATION
-        ) {
-            navigation(
-                route = Routes.WEATHER_NAVIGATION,
-                startDestination = Screen.CurrentTemp.route
-            ) {
-                composable(route = Screen.CurrentTemp.route) { backStackEntry ->
-                    val viewModel = backStackEntry.sharedViewModel<TempDetailsViewModel>(
-                        navController = navHostController,
-                        navGraphRoute = Routes.WEATHER_NAVIGATION,
-                        navBackStackEntry = backStackEntry
-                    )
-                    CurrentTempRoute(navController = navHostController, viewModel = viewModel)
-                }
-                composable(route = Screen.TempDetails.route) { backStackEntry ->
-                    val viewModel = backStackEntry.sharedViewModel<TempDetailsViewModel>(
-                        navController = navHostController,
-                        navGraphRoute = Routes.WEATHER_NAVIGATION,
-                        navBackStackEntry = backStackEntry
-                    )
-                    TempDetailsRoute(navController = navHostController, viewModel = viewModel)
-                }
-            }
-            composable(route = Screen.Graph.route) {
-                GraphRoute()
-            }
-        }*/
         composable(route = Screen.Authorization.route) {
             AuthRoute(
                 onNavigate = { effect ->
