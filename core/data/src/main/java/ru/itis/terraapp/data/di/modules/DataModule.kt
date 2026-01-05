@@ -26,7 +26,7 @@ class DataModule {
         return GsonConverterFactory.create()
     }
 
-/*    @Provides
+    /*@Provides
     @Singleton
     fun provideOpenWeatherApi(
         okHttpClient: OkHttpClient,
@@ -39,6 +39,7 @@ class DataModule {
             .build()
         return retrofit.create(OpenWeatherApi::class.java)
     }*/
+
 
     @Provides
     @Singleton
