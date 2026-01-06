@@ -1,4 +1,4 @@
-package ru.itis.terraapp.feature.mainscreen.impl.ui.weatherScreen
+package ru.itis.terraapp.feature.attractions.ui
 
 import android.content.Context
 import androidx.compose.animation.core.animateFloat
@@ -55,62 +55,33 @@ import androidx.navigation.NavController
 import retrofit2.HttpException
 import ru.itis.terraapp.domain.model.Attraction
 import ru.itis.terraapp.domain.model.Forecast
-import ru.itis.terraapp.feature.mainscreen.impl.R
-import ru.itis.terraapp.feature.mainscreen.impl.state.TempDetailsEffect
-import ru.itis.terraapp.feature.mainscreen.impl.state.TempDetailsEvent
-import ru.itis.terraapp.feature.mainscreen.impl.state.WeatherUIState
-import ru.itis.terraapp.feature.mainscreen.impl.util.CityValidationException
-import ru.itis.terraapp.feature.mainscreen.impl.viewModel.TempDetailsViewModel
+import ru.itis.terraapp.feature.attractions.R
+import ru.itis.terraapp.feature.attractions.state.TempDetailsEffect
+import ru.itis.terraapp.feature.attractions.state.TempDetailsEvent
+import ru.itis.terraapp.feature.attractions.state.WeatherUIState
+import ru.itis.terraapp.feature.attractions.util.CityValidationException
+import ru.itis.terraapp.feature.attractions.viewModel.MainScreenViewModel
 import java.io.IOException
 
 @Composable
-fun TempDetailsRoute(
-    navController: NavController,
-    onNavigateToAttraction: (String) -> Unit,
-    viewModel: TempDetailsViewModel
+fun AttractionsScreenRoute(
+    onNavigate: (TempDetailsEffect) -> Unit,
+    viewModel: MainScreenViewModel
 ) {
     val uiState by viewModel.uiState.collectAsState()
-
-    TempDetailsScreen(
-        uiState = uiState,
-        onEvent = viewModel::onEvent,
-        onNavigateToAttraction = onNavigateToAttraction
-    )
-
-    LaunchedEffect(viewModel.effectFlow) {
-        viewModel.effectFlow.collect { effect ->
-            when (effect) {
-                is TempDetailsEffect.ShowToast -> {
-                    //показать toast
-                }
-                is TempDetailsEffect.NavigateBack -> {}
-                is TempDetailsEffect.NavigateToAttractionDetails -> {
-                    onNavigateToAttraction(effect.attractionId)
-                }
-                else -> {}
-            }
+    LaunchedEffect(Unit) {
+        viewModel.effectFlow.collect {effect ->
+            onNavigate(effect)
         }
     }
+    AttractionsScreenContent(state = uiState, onEvent = viewModel::onEvent, onNavigateToAttraction = onNavigate)
 }
 
 @Composable
-fun TempDetailsScreen(
-    uiState: WeatherUIState,
-    onEvent: (TempDetailsEvent) -> Unit,
-    onNavigateToAttraction: (String) -> Unit
-) {
-    TempDetailsContent(
-        state = uiState,
-        onEvent = onEvent,
-        onNavigateToAttraction = onNavigateToAttraction
-    )
-}
-
-@Composable
-fun TempDetailsContent(
+fun AttractionsScreenContent(
     state: WeatherUIState,
     onEvent: (TempDetailsEvent) -> Unit,
-    onNavigateToAttraction: (String) -> Unit
+    onNavigateToAttraction: (TempDetailsEffect) -> Unit
 ) {
     if (state.error != null) {
         ErrorAlertDialog(
@@ -168,7 +139,10 @@ fun TempDetailsContent(
                 ) { attraction ->
                     AttractionCard(
                         attraction = attraction,
-                        onClick = { onNavigateToAttraction(attraction.id) }
+                        onClick = {
+                            onEvent(TempDetailsEvent.AttractionClicked(attraction.id))
+                        }
+//                        onClick = { onNavigateToAttraction }
                     )
                 }
             }
@@ -455,28 +429,28 @@ private fun getTomorrowAndDayAfterForecast(forecast: List<Forecast>): Pair<Forec
     val midnightIndices = forecast.mapIndexedNotNull { index, forecastModel ->
         if (forecastModel.dt == "00:00") index else null
     }
-    
+
     if (midnightIndices.size < 2) {
         // Если нет достаточно данных, возвращаем null
         return Pair(null, null)
     }
-    
+
     // Первый день - от начала до первой полуночи
     // Второй день - от первой полуночи до второй
     // Третий день - от второй полуночи до третьей
-    
+
     val tomorrowStartIndex = midnightIndices[0]
     val tomorrowEndIndex = if (midnightIndices.size > 1) midnightIndices[1] else forecast.size
     val dayAfterStartIndex = if (midnightIndices.size > 1) midnightIndices[1] else forecast.size
     val dayAfterEndIndex = if (midnightIndices.size > 2) midnightIndices[2] else forecast.size
-    
+
     val tomorrowForecast = forecast.subList(tomorrowStartIndex, tomorrowEndIndex)
     val dayAfterForecast = forecast.subList(dayAfterStartIndex, dayAfterEndIndex)
-    
+
     // Ищем температуру на 12:00 для каждого дня
     val tomorrowAt12 = tomorrowForecast.find { it.dt == "12:00" }
     val dayAfterAt12 = dayAfterForecast.find { it.dt == "12:00" }
-    
+
     return Pair(tomorrowAt12, dayAfterAt12)
 }
 
@@ -500,7 +474,7 @@ fun TomorrowForecastSection(
                 ),
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            
+
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
@@ -519,7 +493,7 @@ fun TomorrowForecastSection(
                             forecast = tomorrowForecast
                         )
                     }
-                    
+
                     // Блок "Послезавтра"
                     if (dayAfterForecast != null) {
                         TomorrowDayCard(
@@ -591,7 +565,7 @@ fun AttractionsSection(
                 ),
                 modifier = Modifier.padding(bottom = 16.dp)
             )
-            
+
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {

@@ -1,6 +1,8 @@
 package ru.itis.terraapp.domain.model
 
+import android.os.Parcelable
 import androidx.compose.runtime.Immutable
+import kotlinx.parcelize.Parcelize
 
 @Immutable
 data class Attraction(

@@ -1,9 +1,14 @@
 package ru.itis.terraapp.feature.mainscreen.impl.apiImpl
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -46,7 +51,8 @@ class MainScreenApiImpl : MainScreenApi {
             
             composable(route = "${MainScreenRoutes.WEATHER_DETAILS}/{city}") { backStackEntry ->
                 val city = backStackEntry.arguments?.getString("city") ?: ""
-                val viewModel: TempDetailsViewModel = hiltViewModel()
+                // Используем ключ навигации для сохранения ViewModel между экранами
+                val viewModel: TempDetailsViewModel = hiltViewModel(key = "weather_$city")
                 val navigation = createNavigation(navController)
                 
                 // Обновляем состояние города и загружаем данные
@@ -57,24 +63,41 @@ class MainScreenApiImpl : MainScreenApi {
                     }
                 }
                 
-                TempDetailsRoute(
+                val uiState by viewModel.uiState.collectAsState()
+                
+                /*TempDetailsRoute(
                     onNavigateToDetails = navigation::navigateToWeather,
                     onNavigateToAttraction = { attractionId ->
-                        navController.navigate("${MainScreenRoutes.ATTRACTION_DETAILS}/$attractionId")
+                        navController.navigate("${MainScreenRoutes.ATTRACTION_DETAILS}/${uiState.city}/$attractionId")
                     },
                     viewModel = viewModel
-                )
+                )*/
             }
             
-            composable(route = "${MainScreenRoutes.ATTRACTION_DETAILS}/{attractionId}") { backStackEntry ->
+            composable(route = "${MainScreenRoutes.ATTRACTION_DETAILS}/{city}/{attractionId}") { backStackEntry ->
+                val city = backStackEntry.arguments?.getString("city") ?: ""
                 val attractionId = backStackEntry.arguments?.getString("attractionId") ?: ""
-                // Используем тот же ViewModel, что и на экране погоды
-                val viewModel: TempDetailsViewModel = hiltViewModel()
+                // Используем тот же ключ, что и на экране погоды, чтобы получить тот же ViewModel
+                val viewModel: TempDetailsViewModel = hiltViewModel(key = "weather_$city")
                 val uiState by viewModel.uiState.collectAsState()
                 val attraction = uiState.attractions.find { it.id == attractionId }
                 
+                // Если достопримечательность не найдена, показываем пустой экран или загрузку
                 if (attraction != null) {
                     AttractionDetailsScreen(attraction = attraction)
+                } else if (uiState.isLoading) {
+                    // Показываем загрузку, если данные еще загружаются
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    // Если достопримечательность не найдена, возвращаемся назад
+                    LaunchedEffect(Unit) {
+                        navController.popBackStack()
+                    }
                 }
             }
         }

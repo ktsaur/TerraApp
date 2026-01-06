@@ -19,11 +19,11 @@ class WeatherScreenApiImpl : WeatherScreenApi {
             }
         }
         
-        TempDetailsRoute(
+        /*TempDetailsRoute(
             onNavigateToDetails = { },
             onNavigateToAttraction = { },
             viewModel = viewModel
-        )
+        )*/
     }
 }
 

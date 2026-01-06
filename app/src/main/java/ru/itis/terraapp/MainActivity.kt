@@ -38,14 +38,13 @@ class MainActivity : ComponentActivity() {
             navigationManager.setNavController(navController)
             val userId = authManager.getUserId()
             val startDestination = if (userId != null && userId != -1) {
-                Routes.MAIN_SCREEN
+                Routes.MAIN_NAVIGATION
             } else {
                 Routes.REGISTRATION
             }
             InitialNavigation(
                 startDestination = startDestination,
-                navController = navController,
-                mainScreenFeature = mainScreenFeature
+                navController = navController
             )
         }
     }
@@ -54,8 +53,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun InitialNavigation(
     startDestination: String,
-    navController: NavHostController,
-    mainScreenFeature: MainScreenFeature
+    navController: NavHostController
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -73,8 +71,7 @@ fun InitialNavigation(
     ) { padding ->
         NavGraph(
             navHostController = navController,
-            startDestination = startDestination,
-            mainScreenFeature = mainScreenFeature
+            startDestination = startDestination
         )
     }
 }
