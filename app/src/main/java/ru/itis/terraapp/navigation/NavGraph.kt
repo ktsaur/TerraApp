@@ -19,6 +19,7 @@ import ru.itis.terraapp.feature.attractions.ui.AttractionsScreenRoute
 import ru.itis.terraapp.feature.attractions.ui.MainScreenRoute
 import ru.itis.terraapp.feature.attractions.viewModel.MainScreenViewModel
 import ru.itis.terraapp.feature.favourites.ui.FavouriteScreenContent
+import ru.itis.terraapp.feature.favourites.viewModel.FavouriteScreenViewModel
 import ru.itis.terraapp.util.sharedViewModel
 
 object Routes {
@@ -146,7 +147,6 @@ fun NavGraph(
                                     effect.message,
                                     Toast.LENGTH_SHORT
                                 ).show()
-
                                 else -> {}
                             }
 
@@ -173,7 +173,12 @@ fun NavGraph(
                 }
             }
             composable(route = Screen.FavouritesScreen.route) { backStackEntry ->
-                FavouriteScreenContent()
+                val viewModel = backStackEntry.sharedViewModel<FavouriteScreenViewModel>(
+                    navController = navHostController,
+                    navGraphRoute = Routes.MAIN_NAVIGATION,
+                    navBackStackEntry = backStackEntry
+                )
+                FavouriteScreenContent(viewModel = viewModel)
             }
         }
     }

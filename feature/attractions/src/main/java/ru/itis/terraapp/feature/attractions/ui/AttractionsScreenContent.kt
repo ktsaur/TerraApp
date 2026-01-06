@@ -27,6 +27,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -45,6 +47,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -141,8 +144,10 @@ fun AttractionsScreenContent(
                         attraction = attraction,
                         onClick = {
                             onEvent(TempDetailsEvent.AttractionClicked(attraction.id))
+                        },
+                        onFavouriteClick = {
+                            onEvent(TempDetailsEvent.FavouriteToggle(attraction.id))
                         }
-//                        onClick = { onNavigateToAttraction }
                     )
                 }
             }
@@ -572,7 +577,8 @@ fun AttractionsSection(
                 items(attractions) { attraction ->
                     AttractionCard(
                         attraction = attraction,
-                        onClick = { onAttractionClick(attraction.id) }
+                        onClick = { onAttractionClick(attraction.id) },
+                        onFavouriteClick = { /* TODO: handle here if section is used */ }
                     )
                 }
             }
@@ -583,7 +589,8 @@ fun AttractionsSection(
 @Composable
 fun AttractionCard(
     attraction: Attraction,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onFavouriteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -596,7 +603,8 @@ fun AttractionCard(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp)
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = attraction.imageUrl,
@@ -611,14 +619,29 @@ fun AttractionCard(
                     .padding(start = 12.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = attraction.name,
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.SemiBold
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = attraction.name,
+                        style = TextStyle(
+                            color = Color.DarkGray,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 8.dp)
                     )
-                )
+                    IconButton(onClick = onFavouriteClick) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_favourite_outline),
+                            contentDescription = "Добавить в избранное",
+                            tint = Color.Red
+                        )
+                    }
+                }
             }
         }
     }

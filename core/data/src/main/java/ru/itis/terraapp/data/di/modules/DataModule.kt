@@ -13,7 +13,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import ru.itis.terraapp.data.database.InceptionDatabase
+import ru.itis.terraapp.data.database.dao.FavouriteAttractionDao
 import ru.itis.terraapp.data.database.dao.UserDao
+import ru.itis.terraapp.data.database.repository.FavouriteAttractionRepository
 import ru.itis.terraapp.data.database.repository.UserRepositoryImpl
 import ru.itis.terraapp.data.di.qualifier.IoDispatchers
 import ru.itis.terraapp.data.remote.AttractionsApi
@@ -21,9 +23,11 @@ import ru.itis.terraapp.data.remote.OpenWeatherApi
 import ru.itis.terraapp.data.remote.interceptors.AppIdInterceptor
 import ru.itis.terraapp.data.remote.interceptors.MetricInterceptor
 import ru.itis.terraapp.data.repository.AttractionsRepositoryImpl
+import ru.itis.terraapp.data.repository.FavouriteAttractionsRepositoryImpl
 import ru.itis.terraapp.data.repository.ForecastRepositoryImpl
 import ru.itis.terraapp.data.repository.WeatherRepositoryImpl
 import ru.itis.terraapp.domain.repositories.AttractionsRepository
+import ru.itis.terraapp.domain.repositories.FavouriteAttractionsRepository
 import ru.itis.terraapp.domain.repositories.ForecastRepository
 import ru.itis.terraapp.domain.repositories.UserRepository
 import ru.itis.terraapp.domain.repositories.WeatherRepository
@@ -123,6 +127,20 @@ class DataModule {
         attractionsApi: AttractionsApi
     ): AttractionsRepository {
         return AttractionsRepositoryImpl(attractionsApi = attractionsApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFavouriteAttractionDao(database: InceptionDatabase): FavouriteAttractionDao =
+        database.favouriteAttractionDao
+
+    @Provides
+    @Singleton
+    fun provideFavouriteAttractionsRepository(
+        favouriteAttractionDao: FavouriteAttractionDao
+    ): FavouriteAttractionsRepository {
+        val localRepository = FavouriteAttractionRepository(favouriteAttractionDao)
+        return FavouriteAttractionsRepositoryImpl(localRepository)
     }
 
     @IoDispatchers

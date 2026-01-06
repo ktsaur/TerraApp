@@ -17,6 +17,7 @@ import ru.itis.terraapp.data.database.entity.WeatherApiEntity
 import ru.itis.terraapp.data.util.toData
 import ru.itis.terraapp.data.util.toDomain
 import ru.itis.terraapp.domain.usecase.attractions.GetAttractionsByCityNameUseCase
+import ru.itis.terraapp.domain.usecase.favourites.ToggleFavouriteAttractionUseCase
 import ru.itis.terraapp.domain.usecase.forecast.GetForecastByCityNameUseCase
 import ru.itis.terraapp.domain.usecase.forecast.GetWeatherByCityNameUseCase
 import ru.itis.terraapp.feature.attractions.state.TempDetailsEffect
@@ -31,7 +32,8 @@ class MainScreenViewModel @Inject constructor(
     private val getForecastByCityNameUseCase: GetForecastByCityNameUseCase,
     private val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase,
     private val getAttractionsByCityNameUseCase: GetAttractionsByCityNameUseCase,
-    private val database: InceptionDatabase
+    private val database: InceptionDatabase,
+    private val toggleFavouriteAttractionUseCase: ToggleFavouriteAttractionUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(WeatherUIState())
     val uiState = _uiState.asStateFlow()
@@ -57,6 +59,20 @@ class MainScreenViewModel @Inject constructor(
                 viewModelScope.launch {
                     _effectFlow.emit(TempDetailsEffect.NavigateToAttractionDetails(event.attractionId))
                 }
+            }
+            is TempDetailsEvent.FavouriteToggle -> {
+                toggleFavourite(event.attractionId)
+            }
+        }
+    }
+
+    private fun toggleFavourite(attractionId: String) {
+        val attraction = _uiState.value.attractions.find { it.id == attractionId } ?: return
+        viewModelScope.launch {
+            runCatching {
+                toggleFavouriteAttractionUseCase(attraction)
+            }.onFailure { ex ->
+                _uiState.update { it.copy(error = ex) }
             }
         }
     }

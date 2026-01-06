@@ -27,4 +27,5 @@ sealed class TempDetailsEvent {
     data object GetWeatherBtnClicked: TempDetailsEvent()
     data class CityUpdate(val city: String): TempDetailsEvent()
     data class AttractionClicked(val attractionId: String): TempDetailsEvent()
+    data class FavouriteToggle(val attractionId: String): TempDetailsEvent()
 }
