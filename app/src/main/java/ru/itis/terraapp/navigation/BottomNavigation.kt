@@ -21,7 +21,8 @@ fun BottomNavigation(
     navController: NavController
 ) {
     val listItems = listOf(
-        BottomItem.MainScreen
+        BottomItem.MainScreen,
+        BottomItem.FavouritesScreen
     )
 
     NavigationBar(

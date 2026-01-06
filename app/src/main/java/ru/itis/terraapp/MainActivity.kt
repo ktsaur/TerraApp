@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
             navigationManager.setNavController(navController)
             val userId = authManager.getUserId()
             val startDestination = if (userId != null && userId != -1) {
-                Routes.MAIN_NAVIGATION
+                Routes.BOTTOM_GRAPH
             } else {
                 Routes.REGISTRATION
             }
