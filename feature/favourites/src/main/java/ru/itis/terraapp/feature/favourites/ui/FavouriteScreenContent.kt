@@ -42,6 +42,7 @@ fun FavouriteScreenContent(
     val state by viewModel.uiState.collectAsState()
 
     LaunchedEffect(Unit) {
+        viewModel.logFavouriteScreenView()
         viewModel.loadFavourites()
     }
 

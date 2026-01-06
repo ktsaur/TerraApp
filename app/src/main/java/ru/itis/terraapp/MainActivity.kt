@@ -6,10 +6,13 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import ru.itis.terraapp.base.AuthManager.AuthManager
 import ru.itis.terraapp.navigation.BottomNavigation
 import ru.itis.terraapp.navigation.NavGraph
@@ -43,6 +46,10 @@ class MainActivity : ComponentActivity() {
                 navController = navController
             )
         }
+        /*lifecycleScope.launch {
+            delay(5000)
+            throw IllegalStateException("Test crush")
+        }*/
     }
 }
 

@@ -57,6 +57,13 @@ dependencies {
 
     implementation(libs.androidx.fragment)
 
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebase.bom.get()}"))
+
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx")
+
     //Hilt
     implementation(libs.hilt)
     implementation(libs.hilt.navigation)

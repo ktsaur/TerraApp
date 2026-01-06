@@ -50,6 +50,12 @@ dependencies {
     implementation(project(path=":core:data"))
     implementation(project(path=":core:domain"))
 
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebase.bom.get()}"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx")
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

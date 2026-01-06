@@ -34,6 +34,9 @@ firebase-crashlytics = "19.4.3"
 firebase-analytics = "22.4.0"
 firebase-remote-config = "22.1.2"
 crashlytics-plugin = "3.0.3"
+firebase-perf="21.0.1"
+perf-plugin="1.4.2"
+firebase-bom = "32.5.0"
 play-services-cloud-messaging = "17.3.0"
 appcompat = "1.7.1"
 material = "1.13.0"
@@ -69,12 +72,14 @@ collections = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-imm
 room = { group = "androidx.room", name = "room-runtime", version.ref = "room_version" }
 room-ksp = { group = "androidx.room", name = "room-compiler", version.ref = "room_version" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room_version" }
-firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebase-messaging" }
-play-services-cloud-messaging = { group = "com.google.android.gms", name = "play-services-cloud-messaging", version.ref = "play-services-cloud-messaging" }
 jbcrypt-v04 = { module = "org.mindrot:jbcrypt", version.ref = "jbcrypt" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+#firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebase-crashlytics" }
+#firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics", version.ref = "firebase-analytics" }
+#firebase-perf-ktx = { group = "com.google.firebase", name = "firebase-perf-ktx", version.ref = "firebase-perf" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -83,4 +88,6 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt-version" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-sevices" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+crashlytics-plugin = {id ="com.google.firebase.crashlytics", version.ref = "crashlytics-plugin"}
+perfs-plugin = {id ="com.google.firebase.firebase-perf", version.ref = "perf-plugin"}
 

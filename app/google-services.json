@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "738235722080",
+    "project_id": "terraapp-39cef",
+    "storage_bucket": "terraapp-39cef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:738235722080:android:5dc7c75cff3e09e5a25605",
+        "android_client_info": {
+          "package_name": "ru.itis.terraapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMzwrK0v5jgAAGVtY-273zHzU0H8yH0o8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
