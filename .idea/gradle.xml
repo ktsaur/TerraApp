@@ -18,9 +18,6 @@
             <option value="$PROJECT_DIR$/feature/attractions" />
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/mainpage" />
-            <option value="$PROJECT_DIR$/feature/mainscreen" />
-            <option value="$PROJECT_DIR$/feature/mainscreen/api" />
-            <option value="$PROJECT_DIR$/feature/mainscreen/impl" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />

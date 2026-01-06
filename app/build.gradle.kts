@@ -62,8 +62,6 @@ dependencies {
     implementation(project(path=":core:domain"))
 
     //Feature
-    implementation(project(path=":feature:mainscreen:api"))
-    implementation(project(path=":feature:mainscreen:impl"))
     implementation(project(path=":feature:auth"))
     implementation(project(path=":feature:attractions"))
 

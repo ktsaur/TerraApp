@@ -1,29 +1,23 @@
 package ru.itis.terraapp.navigation
 
 import android.widget.Toast
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
-import androidx.navigation.navigation
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navigation
 import ru.itis.terraapp.auth.ui.authorization.AuthRoute
 import ru.itis.terraapp.auth.ui.authorization.AuthorizationEffect
 import ru.itis.terraapp.auth.ui.registration.RegistrEffect
 import ru.itis.terraapp.auth.ui.registration.RegistrRoute
-import ru.itis.terraapp.domain.model.Attraction
 import ru.itis.terraapp.feature.attractions.state.TempDetailsEffect
 import ru.itis.terraapp.feature.attractions.ui.AttractionDetailScreenRoute
-import ru.itis.terraapp.feature.attractions.ui.AttractionDetailsScreenContent
 import ru.itis.terraapp.feature.attractions.ui.AttractionsScreenRoute
 import ru.itis.terraapp.feature.attractions.ui.MainScreenRoute
 import ru.itis.terraapp.feature.attractions.viewModel.MainScreenViewModel
-import ru.itis.terraapp.feature.mainscreen.api.MainScreenFeature
 import ru.itis.terraapp.util.sharedViewModel
 
 object Routes {

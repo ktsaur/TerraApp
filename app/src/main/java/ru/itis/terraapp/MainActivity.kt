@@ -11,7 +11,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
 import ru.itis.terraapp.auth.utils.AuthManager
-import ru.itis.terraapp.feature.mainscreen.api.MainScreenFeature
 import ru.itis.terraapp.navigation.BottomNavigation
 import ru.itis.terraapp.navigation.NavGraph
 import ru.itis.terraapp.navigation.NavigationManager
@@ -27,9 +26,6 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var navigationManager: NavigationManager
-    
-    @Inject
-    lateinit var mainScreenFeature: MainScreenFeature
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
