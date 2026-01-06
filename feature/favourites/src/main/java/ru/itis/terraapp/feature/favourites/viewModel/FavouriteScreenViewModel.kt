@@ -8,13 +8,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import ru.itis.terraapp.base.AuthManager.AuthManager
 import ru.itis.terraapp.domain.model.Attraction
 import ru.itis.terraapp.domain.usecase.favourites.GetFavouriteAttractionsUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class FavouriteScreenViewModel @Inject constructor(
-    private val getFavouriteAttractionsUseCase: GetFavouriteAttractionsUseCase
+    private val getFavouriteAttractionsUseCase: GetFavouriteAttractionsUseCase,
+    private val authManager: AuthManager
 ): ViewModel() {
 
     data class UiState(
@@ -33,7 +35,8 @@ class FavouriteScreenViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
             runCatching {
-                getFavouriteAttractionsUseCase()
+                val userId = authManager.getUserId() ?: throw IllegalStateException("User not logged in")
+                getFavouriteAttractionsUseCase(userId)
             }.onSuccess { list ->
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,

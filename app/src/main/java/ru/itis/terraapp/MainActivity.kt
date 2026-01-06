@@ -10,7 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.itis.terraapp.auth.utils.AuthManager
+import ru.itis.terraapp.base.AuthManager.AuthManager
 import ru.itis.terraapp.navigation.BottomNavigation
 import ru.itis.terraapp.navigation.NavGraph
 import ru.itis.terraapp.navigation.NavigationManager

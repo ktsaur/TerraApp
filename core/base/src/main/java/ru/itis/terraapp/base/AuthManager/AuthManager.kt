@@ -1,11 +1,11 @@
-/*
-package ru.itis.terraapp.auth.utils
+package ru.itis.terraapp.base.AuthManager
 
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
+
 
 class AuthManager @Inject constructor(
     @ApplicationContext private val context: Context
@@ -35,4 +35,4 @@ class AuthManager @Inject constructor(
             .remove(KEY_USERID)
             .apply()
     }
-}*/
+}

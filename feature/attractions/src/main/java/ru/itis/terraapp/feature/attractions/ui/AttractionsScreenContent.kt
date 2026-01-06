@@ -147,7 +147,8 @@ fun AttractionsScreenContent(
                         },
                         onFavouriteClick = {
                             onEvent(TempDetailsEvent.FavouriteToggle(attraction.id))
-                        }
+                        },
+                        isFavourite = state.favouriteAttractionIds.contains(attraction.id)
                     )
                 }
             }
@@ -578,7 +579,8 @@ fun AttractionsSection(
                     AttractionCard(
                         attraction = attraction,
                         onClick = { onAttractionClick(attraction.id) },
-                        onFavouriteClick = { /* TODO: handle here if section is used */ }
+                        onFavouriteClick = { /* TODO: handle here if section is used */ },
+                        isFavourite = false
                     )
                 }
             }
@@ -590,7 +592,8 @@ fun AttractionsSection(
 fun AttractionCard(
     attraction: Attraction,
     onClick: () -> Unit,
-    onFavouriteClick: () -> Unit
+    onFavouriteClick: () -> Unit,
+    isFavourite: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -636,9 +639,11 @@ fun AttractionCard(
                     )
                     IconButton(onClick = onFavouriteClick) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_favourite_outline),
-                            contentDescription = "Добавить в избранное",
-                            tint = Color.Red
+                            painter = painterResource(
+                                id = if (isFavourite) R.drawable.ic_favourite_filled else R.drawable.ic_favourite_outline
+                            ),
+                            contentDescription = if (isFavourite) "Убрать из избранного" else "Добавить в избранное",
+                            tint = if (isFavourite) Color.Red else Color.LightGray
                         )
                     }
                 }

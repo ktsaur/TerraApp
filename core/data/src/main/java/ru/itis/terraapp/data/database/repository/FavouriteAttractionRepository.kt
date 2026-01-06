@@ -12,16 +12,16 @@ class FavouriteAttractionRepository @Inject constructor(
         favouriteAttractionDao.insertFavourite(entity)
     }
 
-    suspend fun removeFromFavourites(attractionId: String) {
-        favouriteAttractionDao.deleteFavouriteById(attractionId)
+    suspend fun removeFromFavourites(attractionId: String, userId: Int) {
+        favouriteAttractionDao.deleteFavouriteById(attractionId, userId)
     }
 
-    suspend fun getFavourites(): List<FavouriteAttractionEntity> {
-        return favouriteAttractionDao.getAllFavourites()
+    suspend fun getFavourites(userId: Int): List<FavouriteAttractionEntity> {
+        return favouriteAttractionDao.getAllFavourites(userId)
     }
 
-    suspend fun isFavourite(attractionId: String): Boolean {
-        return favouriteAttractionDao.isFavourite(attractionId)
+    suspend fun isFavourite(attractionId: String, userId: Int): Boolean {
+        return favouriteAttractionDao.isFavourite(attractionId, userId)
     }
 }
 

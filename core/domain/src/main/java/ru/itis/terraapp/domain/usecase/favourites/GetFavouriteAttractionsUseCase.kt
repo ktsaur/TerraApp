@@ -7,8 +7,8 @@ import javax.inject.Inject
 class GetFavouriteAttractionsUseCase @Inject constructor(
     private val favouriteAttractionsRepository: FavouriteAttractionsRepository
 ) {
-    suspend operator fun invoke(): List<Attraction> {
-        return favouriteAttractionsRepository.getFavourites()
+    suspend operator fun invoke(userId: Int): List<Attraction> {
+        return favouriteAttractionsRepository.getFavourites(userId)
     }
 }
 

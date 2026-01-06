@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.itis.terraapp.auth.R
-import ru.itis.terraapp.auth.utils.AuthManager
+import ru.itis.terraapp.base.AuthManager.AuthManager
 import ru.itis.terraapp.domain.usecase.auth.LoginResult
 import ru.itis.terraapp.domain.usecase.auth.LoginUserUseCase
 import javax.inject.Inject

@@ -16,14 +16,14 @@ interface FavouriteAttractionDao {
     @Delete
     suspend fun deleteFavourite(attraction: FavouriteAttractionEntity)
 
-    @Query("DELETE FROM favourite_attraction WHERE attraction_id = :attractionId")
-    suspend fun deleteFavouriteById(attractionId: String)
+    @Query("DELETE FROM favourite_attraction WHERE attraction_id = :attractionId AND user_id = :userId")
+    suspend fun deleteFavouriteById(attractionId: String, userId: Int)
 
-    @Query("SELECT * FROM favourite_attraction")
-    suspend fun getAllFavourites(): List<FavouriteAttractionEntity>
+    @Query("SELECT * FROM favourite_attraction WHERE user_id = :userId")
+    suspend fun getAllFavourites(userId: Int): List<FavouriteAttractionEntity>
 
-    @Query("SELECT EXISTS(SELECT 1 FROM favourite_attraction WHERE attraction_id = :attractionId)")
-    suspend fun isFavourite(attractionId: String): Boolean
+    @Query("SELECT EXISTS(SELECT 1 FROM favourite_attraction WHERE attraction_id = :attractionId AND user_id = :userId)")
+    suspend fun isFavourite(attractionId: String, userId: Int): Boolean
 }
 
 

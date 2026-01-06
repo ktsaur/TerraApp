@@ -47,6 +47,7 @@ dependencies {
     //Core
     implementation(project(path=":core:domain"))
     implementation(project(path=":core:data"))
+    implementation(project(path=":core:base"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

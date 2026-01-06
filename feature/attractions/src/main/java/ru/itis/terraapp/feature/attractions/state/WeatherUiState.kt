@@ -11,6 +11,7 @@ data class WeatherUIState (
     val weather: Weather = Weather.EMPTY,
     val forecast: List<Forecast>? = emptyList(),
     val attractions: List<Attraction> = emptyList(),
+    val favouriteAttractionIds: Set<String> = emptySet(),
     val error: Throwable? = null,
     val isLoading: Boolean = true
 )

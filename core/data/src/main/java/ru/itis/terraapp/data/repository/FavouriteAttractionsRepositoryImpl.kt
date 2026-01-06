@@ -10,25 +10,26 @@ class FavouriteAttractionsRepositoryImpl @Inject constructor(
     private val favouriteAttractionRepository: FavouriteAttractionRepository
 ) : FavouriteAttractionsRepository {
 
-    override suspend fun addToFavourites(attraction: Attraction) {
-        favouriteAttractionRepository.addToFavourites(attraction.toEntity())
+    override suspend fun addToFavourites(attraction: Attraction, userId: Int) {
+        favouriteAttractionRepository.addToFavourites(attraction.toEntity(userId))
     }
 
-    override suspend fun removeFromFavourites(attractionId: String) {
-        favouriteAttractionRepository.removeFromFavourites(attractionId)
+    override suspend fun removeFromFavourites(attractionId: String, userId: Int) {
+        favouriteAttractionRepository.removeFromFavourites(attractionId, userId)
     }
 
-    override suspend fun getFavourites(): List<Attraction> {
-        return favouriteAttractionRepository.getFavourites().map { it.toDomain() }
+    override suspend fun getFavourites(userId: Int): List<Attraction> {
+        return favouriteAttractionRepository.getFavourites(userId).map { it.toDomain() }
     }
 
-    override suspend fun isFavourite(attractionId: String): Boolean {
-        return favouriteAttractionRepository.isFavourite(attractionId)
+    override suspend fun isFavourite(attractionId: String, userId: Int): Boolean {
+        return favouriteAttractionRepository.isFavourite(attractionId, userId)
     }
 
-    private fun Attraction.toEntity(): FavouriteAttractionEntity {
+    private fun Attraction.toEntity(userId: Int): FavouriteAttractionEntity {
         return FavouriteAttractionEntity(
             attractionId = id,
+            userId = userId,
             name = name,
             description = description,
             rating = rating,

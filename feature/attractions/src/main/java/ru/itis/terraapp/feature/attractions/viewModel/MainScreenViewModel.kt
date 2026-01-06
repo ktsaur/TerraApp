@@ -14,6 +14,7 @@ import kotlinx.coroutines.withContext
 import ru.itis.terraapp.data.database.InceptionDatabase
 import ru.itis.terraapp.data.database.entity.QueryHistoryEntity
 import ru.itis.terraapp.data.database.entity.WeatherApiEntity
+import ru.itis.terraapp.base.AuthManager.AuthManager
 import ru.itis.terraapp.data.util.toData
 import ru.itis.terraapp.data.util.toDomain
 import ru.itis.terraapp.domain.usecase.attractions.GetAttractionsByCityNameUseCase
@@ -33,7 +34,8 @@ class MainScreenViewModel @Inject constructor(
     private val getWeatherByCityNameUseCase: GetWeatherByCityNameUseCase,
     private val getAttractionsByCityNameUseCase: GetAttractionsByCityNameUseCase,
     private val database: InceptionDatabase,
-    private val toggleFavouriteAttractionUseCase: ToggleFavouriteAttractionUseCase
+    private val toggleFavouriteAttractionUseCase: ToggleFavouriteAttractionUseCase,
+    private val authManager: AuthManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(WeatherUIState())
     val uiState = _uiState.asStateFlow()
@@ -68,9 +70,19 @@ class MainScreenViewModel @Inject constructor(
 
     private fun toggleFavourite(attractionId: String) {
         val attraction = _uiState.value.attractions.find { it.id == attractionId } ?: return
+        val userId = authManager.getUserId() ?: return
         viewModelScope.launch {
             runCatching {
-                toggleFavouriteAttractionUseCase(attraction)
+                val nowFavourite = toggleFavouriteAttractionUseCase(attraction, userId)
+                _uiState.update { state ->
+                    val current = state.favouriteAttractionIds.toMutableSet()
+                    if (nowFavourite) {
+                        current.add(attractionId)
+                    } else {
+                        current.remove(attractionId)
+                    }
+                    state.copy(favouriteAttractionIds = current)
+                }
             }.onFailure { ex ->
                 _uiState.update { it.copy(error = ex) }
             }
