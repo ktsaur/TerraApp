@@ -52,11 +52,11 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.collections)
     implementation(libs.jbcrypt.v04)
+    testImplementation(libs.mockk)
     testImplementation(libs.junit)
+    testImplementation(libs.coroutines.test)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlin.stdlib)
@@ -78,6 +78,7 @@ dependencies {
     implementation(libs.androidx.navigation)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.foundation)
+
 
     //Room
     implementation(libs.room)

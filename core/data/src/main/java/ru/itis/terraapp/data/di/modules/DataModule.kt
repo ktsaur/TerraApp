@@ -71,7 +71,6 @@ class DataModule {
     fun provideAttractionsApi(
         converterFactory: GsonConverterFactory
     ): AttractionsApi {
-        // Для Mockoon используем отдельный OkHttpClient без интерцепторов
         val okHttpClient = OkHttpClient.Builder().build()
         val retrofit = Retrofit.Builder()
             .baseUrl(MOCKOON_API_URL)
