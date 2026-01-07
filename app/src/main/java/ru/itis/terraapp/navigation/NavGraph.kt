@@ -27,7 +27,7 @@ import ru.itis.terraapp.util.sharedViewModel
 object Routes {
     const val AUTHORIZATION = "authorization"
     const val REGISTRATION = "registration"
-    const val PROFILE = "profile_screen"
+    const val PROFILE_SCREEN = "profile_screen"
     const val BOTTOM_GRAPH = "bottom_graph"
     const val MAIN_NAVIGATION = "main_nav"
     const val MAIN_SCREEN = "main_screen"
@@ -37,7 +37,7 @@ object Routes {
 }
 
 sealed class Screen(val route: String) {
-    object Profile : Screen(Routes.PROFILE)
+    object ProfileScreen : Screen(Routes.PROFILE_SCREEN)
     object Registration : Screen(Routes.REGISTRATION)
     object Authorization : Screen(Routes.AUTHORIZATION)
     object MainScreen : Screen(Routes.MAIN_SCREEN)
@@ -182,7 +182,7 @@ fun NavGraph(
                 )
                 FavouriteScreenContent(viewModel = viewModel)
             }
-            composable(route = Screen.Profile.route) { backStackEntry ->
+            composable(route = Screen.ProfileScreen.route) { backStackEntry ->
                 ProfileRoute(onNavigate = { effect ->
                     when (effect) {
                         is ProfileEffect.NavigateToLogin -> {

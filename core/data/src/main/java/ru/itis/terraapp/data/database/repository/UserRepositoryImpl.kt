@@ -39,13 +39,13 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserByEmail(email: String): User? {
+    override suspend fun getUserByEmail(email: String): User {
         return withContext(ioDispatchers) {
-            userDao.getUserByEmail(email = email)?.toUser()
+            userDao.getUserByEmail(email = email).toUser()
         }
     }
 
-    override suspend fun getAllEmails(): List<String>? {
+    override suspend fun getAllEmails(): List<String> {
         return withContext(ioDispatchers) {
             userDao.getAllEmails()
         }

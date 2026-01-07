@@ -9,7 +9,6 @@ import dagger.hilt.android.HiltAndroidApp
 class TerraApp: Application() {
     override fun onCreate() {
         super.onCreate()
-        Firebase.analytics // Инициализация Analytics (автоматически)
-    // Crashlytics и Performance инициализируются автоматически
+        Firebase.analytics
     }
 }
