@@ -10,15 +10,17 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.mindrot.jbcrypt.BCrypt
 import ru.itis.terraapp.auth.R
 import ru.itis.terraapp.base.AuthManager.AuthManager
-import ru.itis.terraapp.domain.usecase.auth.LoginResult
 import ru.itis.terraapp.domain.usecase.auth.LoginUserUseCase
+import ru.itis.terraapp.domain.usecase.profile.GetUserUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class AuthorizationViewModel @Inject constructor(
     private val loginUserUseCase: LoginUserUseCase,
+    private val getUserUseCase: GetUserUseCase,
     private val authManager: AuthManager
 ) : ViewModel() {
 
@@ -49,21 +51,21 @@ class AuthorizationViewModel @Inject constructor(
         val email = _uiState.value.email
         val password = _uiState.value.password
         viewModelScope.launch {
-            when (val result = loginUserUseCase(email, password)) {
-                is LoginResult.Success -> {
+            val user = loginUserUseCase.invoke(email = email)
+            if (user != null) {
+                val storedHash = user.password
+                if (BCrypt.checkpw(password, storedHash)) {
                     _uiState.update { it.copy(registerResult = true) }
-                    result.user.userId?.let { authManager.saveUserId(it) }
+                    user.userId?.let { authManager.saveUserId(it) }
                     _effectFlow.emit(AuthorizationEffect.NavigateToCurrentTemp)
-                    _effectFlow.emit(AuthorizationEffect.ShowToast(message = context.getString(R.string.auth_success)))
-                }
-                is LoginResult.WrongPassword -> {
+                    _effectFlow.emit(AuthorizationEffect.ShowToast( message = context.getString(R.string.auth_success)))
+                } else {
                     _uiState.update { it.copy(registerResult = false) }
                     _effectFlow.emit(AuthorizationEffect.ShowToast(message = context.getString(R.string.auth_wrong_password)))
                 }
-                is LoginResult.UserNotFound -> {
-                    _uiState.update { it.copy(registerResult = false) }
-                    _effectFlow.emit(AuthorizationEffect.ShowToast(message = context.getString(R.string.auth_user_not_found)))
-                }
+            } else {
+                _uiState.update { it.copy(registerResult = false) }
+                _effectFlow.emit(AuthorizationEffect.ShowToast(message = context.getString(R.string.auth_user_not_found)))
             }
         }
     }

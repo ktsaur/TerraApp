@@ -1,5 +1,6 @@
 package ru.itis.terraapp.feature.profile.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.itis.terraapp.base.AuthManager.AuthManager
+import ru.itis.terraapp.base.util.AnalyticsHelper
 import ru.itis.terraapp.domain.usecase.profile.DeleteUserUseCase
 import ru.itis.terraapp.domain.usecase.profile.GetUserUseCase
 import ru.itis.terraapp.feature.profile.state.ProfileEffect
@@ -33,6 +35,7 @@ class ProfileViewModel @Inject constructor(
 
     init {
         loadUserData()
+        logFavouriteScreenView()
     }
 
     fun onEvent(event: ProfileUIEvent) {
@@ -120,5 +123,14 @@ class ProfileViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun logFavouriteScreenView() {
+        Log.i("fav", "до")
+        AnalyticsHelper.logScreenView(
+            screenName = "Favourites",
+            screenClass = "FavouriteScreenContent"
+        )
+        Log.i("fav", "после")
     }
 }
