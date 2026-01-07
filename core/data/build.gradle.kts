@@ -17,8 +17,6 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "OPEN_WEATHER_API_URL", "\"https://api.openweathermap.org/data/2.5/\"")
-        // Для реального устройства используйте "http://localhost:3000/" или IP адрес вашего компьютера
-        // Для Android эмулятора используйте "http://10.0.2.2:3000/"
         buildConfigField("String", "MOCKOON_API_URL", "\"http://10.0.2.2:3000/\"")
         buildConfigField("int", "DB_VERSION", "1")
     }
@@ -55,20 +53,9 @@ dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.material)
     implementation(libs.collections)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlin.stdlib)
 
     implementation(libs.androidx.fragment)
@@ -82,11 +69,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.okhttp)
     implementation(libs.converter.gson)
-
-    //Compose Navigation
-    implementation(libs.androidx.navigation)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.androidx.foundation)
 
     //Room
     implementation(libs.room)

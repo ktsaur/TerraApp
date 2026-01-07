@@ -115,11 +115,11 @@ class MainScreenViewModel @Inject constructor(
                 return@withContext (abs(lastTimestamp - System.currentTimeMillis()) >= 5 * 60 * 1000 || countBetween >= 3)
             }
 
-//            if (shouldFetchFromApi) {
+            if (shouldFetchFromApi) {
                 fetchFromApi(city = city)
-            /*} else {
+            } else {
                 fetchFromDb(city = city)
-            }*/
+            }
         }
     }
 

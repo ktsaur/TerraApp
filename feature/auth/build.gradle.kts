@@ -60,13 +60,6 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.collections)
     implementation(libs.jbcrypt.v04)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.kotlin.stdlib)
 
     implementation(libs.androidx.fragment)
@@ -76,10 +69,6 @@ dependencies {
     implementation(libs.hilt.navigation)
     ksp(libs.hilt.compiler)
 
-    //Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.okhttp)
-    implementation(libs.converter.gson)
 
     //Compose Navigation
     implementation(libs.androidx.navigation)
