@@ -1,5 +1,6 @@
 package ru.itis.terraapp.feature.attractions.viewModel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -133,6 +134,7 @@ class MainScreenViewModel @Inject constructor(
             val attractions = getAttractionsByCityNameUseCase.invoke(city = city)
             Triple(forecast, weather, attractions)
         }.onSuccess { (forecast, weather, attractions) ->
+            Log.i("IMAGE", attractions[0].imageUrl)
             _uiState.update {
                 it.copy(
                     forecast = forecast,

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -55,7 +56,7 @@ fun FavouriteScreenContent(
                 .padding(horizontal = 16.dp)
         ) {
             Text(
-                text = "Избранное",
+                text = stringResource(R.string.favourites),
                 style = TextStyle(
                     color = Color.Black,
                     fontSize = 28.sp,
@@ -73,7 +74,7 @@ fun FavouriteScreenContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Загрузка...",
+                            text = stringResource(R.string.load),
                             style = TextStyle(
                                 color = Color.Gray,
                                 fontSize = 14.sp
@@ -87,7 +88,7 @@ fun FavouriteScreenContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Ошибка загрузки",
+                            text = stringResource(R.string.loading_error),
                             style = TextStyle(
                                 color = Color.Gray,
                                 fontSize = 14.sp
@@ -101,7 +102,7 @@ fun FavouriteScreenContent(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = "Список избранных пуст",
+                            text = stringResource(R.string.favorites_list_is_empty),
                             style = TextStyle(
                                 color = Color.Gray,
                                 fontSize = 14.sp
@@ -116,8 +117,8 @@ fun FavouriteScreenContent(
                         items(state.favourites, key = { it.id }) { attraction ->
                             AttractionCard(
                                 attraction = attraction,
-                                onClick = { /* TODO: навигация к деталям достопримечательности */ },
-                                onFavouriteClick = { /* TODO: возможно удаление из избранного */ }
+                                onClick = { },
+                                onFavouriteClick = {  }
                             )
                         }
                     }

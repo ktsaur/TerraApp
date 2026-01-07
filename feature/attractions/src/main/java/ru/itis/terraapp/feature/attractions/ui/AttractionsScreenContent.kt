@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -97,10 +98,20 @@ fun AttractionsScreenContent(
         return
     }
     if (state.isLoading || state.forecast.isNullOrEmpty()) {
-        ShimmerScreen()
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(
+                color = Color(0xFF4A6FA5),
+                strokeWidth = 4.dp
+            )
+        }
         return
     }
     val tomorrowAndDayAfter = getTomorrowAndDayAfterForecast(state.forecast)
+
+    var selectedForecast by remember { mutableStateOf<Forecast?>(null) }
 
     Scaffold { padding ->
         LazyColumn(
@@ -119,13 +130,16 @@ fun AttractionsScreenContent(
             item {
                 TomorrowForecastSection(
                     tomorrowForecast = tomorrowAndDayAfter.first,
-                    dayAfterForecast = tomorrowAndDayAfter.second
+                    dayAfterForecast = tomorrowAndDayAfter.second,
+                    onForecastClick = { forecast ->  // ← передаём callback
+                        selectedForecast = forecast
+                    }
                 )
             }
             if (state.attractions.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Достопримечательности",
+                        text = stringResource(R.string.attractions_title),
                         style = TextStyle(
                             color = Color.Black,
                             fontSize = 20.sp,
@@ -153,176 +167,32 @@ fun AttractionsScreenContent(
                     )
                 }
             }
-            /*item {
-                if (state.attractions.isNotEmpty()) {
-                    AttractionsSection(
-                        attractions = state.attractions,
-                        onAttractionClick = { attractionId ->
-                            onEvent(TempDetailsEvent.AttractionClicked(attractionId))
-                        }
-                    )
-                }
-            }*/
         }
-    }
-}
 
-@Composable
-fun ShimmerScreen() {
-    Scaffold { padding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 20.dp)
-                    .shimmerEffect(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.elevatedCardElevation(6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
-                border = BorderStroke(1.dp, Color.LightGray)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                        .background(color = Color.White)
-                )
-            }
-            repeat(3) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 36.dp)
-                ) {
-                    Card(
-                        modifier = Modifier
-                            .padding(top = 30.dp)
-                            .shimmerEffect(),
-                        shape = RoundedCornerShape(12.dp),
-                        elevation = CardDefaults.elevatedCardElevation(6.dp),
-                        colors = CardDefaults.cardColors(containerColor = Color.White)
-                    ) {
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(10.dp),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            items(4) {
-                                Card(
-                                    modifier = Modifier
-                                        .size(58.dp)
-                                        .shimmerEffect(),
-                                    shape = RoundedCornerShape(10.dp),
-                                    colors = CardDefaults.cardColors(
-                                        containerColor = Color.Blue
-                                    )
-                                ) {}
-                            }
-                        }
+        selectedForecast?.let { forecast ->
+            AlertDialog(
+                onDismissRequest = { selectedForecast = null },
+                title = {
+                    Text(text = stringResource(R.string.detail_temperature))
+                },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.time, forecast.dt))
+                        Text(stringResource(R.string.temp, forecast.temp.toInt()))
+                        Text(stringResource(R.string.feels_like, forecast.feelsLike.toInt()))
+                        Text(stringResource(R.string.max_temp, forecast.tempMax.toInt()))
+                        Text(stringResource(R.string.min_temp, forecast.tempMin.toInt()))
+                        Text(stringResource(R.string.description, forecast.mainDesc))
+                        Text(forecast.description) // полное описание
+                    }
+                },
+                confirmButton = {
+                    TextButton(onClick = { selectedForecast = null }) {
+                        Text(stringResource(R.string.ok))
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun ForecastSection(title: String, forecast: List<Forecast>) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 36.dp)
-    ) {
-        Text(
-            text = title,
-            style = TextStyle(
-                color = Color.DarkGray,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Medium
             )
-        )
-        Card(
-            modifier = Modifier.padding(top = 30.dp),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.elevatedCardElevation(6.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
-        ) {
-            LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                itemsIndexed(forecast) { _, item ->
-                    ItemRow(forecastModel = item)
-                }
-            }
         }
-    }
-}
-
-@Composable
-fun ItemRow(forecastModel: Forecast) {
-    var openDialog by remember { mutableStateOf(false) }
-
-    Card(
-        modifier = Modifier
-            .size(58.dp)
-            .clickable { openDialog = true },
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Blue
-        )
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Text(text = forecastModel.dt, fontSize = 14.sp)
-                Text(
-                    text = "${forecastModel.temp.toInt()}°C",
-                    fontSize = 18.sp,
-                    modifier = Modifier.padding(top = 3.dp)
-                )
-            }
-        }
-    }
-
-    if (openDialog) {
-        AlertDialog(
-            onDismissRequest = { openDialog = false },
-            confirmButton = {
-                TextButton(onClick = { openDialog = false }) {
-                    Text(text = stringResource(id = R.string.ok))
-                }
-            },
-            title = { Text(text = stringResource(id = R.string.detail_temperature)) },
-            text = {
-                Text(
-                    text = buildString {
-                        appendLine(stringResource(R.string.time, forecastModel.dt))
-                        appendLine(stringResource(R.string.temp, forecastModel.temp.toInt()))
-                        appendLine(
-                            stringResource(
-                                R.string.feels_like,
-                                forecastModel.feelsLike.toInt()
-                            )
-                        )
-                        appendLine(stringResource(R.string.max_temp, forecastModel.tempMax.toInt()))
-                        appendLine(stringResource(R.string.min_temp, forecastModel.tempMin.toInt()))
-                        appendLine(stringResource(R.string.description, forecastModel.mainDesc))
-                    }
-                )
-            }
-        )
     }
 }
 
@@ -371,36 +241,6 @@ fun TempMainCard(city: String, weatherUIState: WeatherUIState) {
     }
 }
 
-fun Modifier.shimmerEffect(): Modifier = composed {
-    var size by remember {
-        mutableStateOf(IntSize.Zero)
-    }
-    val transition = rememberInfiniteTransition()
-    val startOffsetX by transition.animateFloat(
-        initialValue = -2 * size.width.toFloat(),
-        targetValue = 2 * size.width.toFloat(),
-        animationSpec = infiniteRepeatable(
-            animation = tween(1000)
-        )
-    )
-
-    background(
-        brush = Brush.linearGradient(
-            colors = listOf(
-                Color(0xFFB8B5B5),
-                Color(0xFF8F8B8B),
-                Color(0xFFB8B5B5),
-            ),
-            start = Offset(startOffsetX, 0f),
-            end = Offset(startOffsetX + size.width.toFloat(), size.height.toFloat())
-        )
-    )
-        .onGloballyPositioned {
-            size = it.size
-        }
-}
-
-
 @Composable
 fun ErrorAlertDialog(ex: Throwable, context: Context, onConfirmBack: () -> Unit) {
     var openDialog by remember { mutableStateOf(false) }
@@ -421,24 +261,16 @@ fun ErrorAlertDialog(ex: Throwable, context: Context, onConfirmBack: () -> Unit)
     )
 }
 
-/**
- * Получает прогноз на завтра и послезавтра на 12:00
- * @return Pair<Forecast для завтра, Forecast для послезавтра>
- */
 private fun getTomorrowAndDayAfterForecast(forecast: List<Forecast>): Pair<Forecast?, Forecast?> {
-    // Находим индексы полуночи (00:00) для разделения дней
+
     val midnightIndices = forecast.mapIndexedNotNull { index, forecastModel ->
         if (forecastModel.dt == "00:00") index else null
     }
 
     if (midnightIndices.size < 2) {
-        // Если нет достаточно данных, возвращаем null
         return Pair(null, null)
     }
 
-    // Первый день - от начала до первой полуночи
-    // Второй день - от первой полуночи до второй
-    // Третий день - от второй полуночи до третьей
 
     val tomorrowStartIndex = midnightIndices[0]
     val tomorrowEndIndex = if (midnightIndices.size > 1) midnightIndices[1] else forecast.size
@@ -448,65 +280,17 @@ private fun getTomorrowAndDayAfterForecast(forecast: List<Forecast>): Pair<Forec
     val tomorrowForecast = forecast.subList(tomorrowStartIndex, tomorrowEndIndex)
     val dayAfterForecast = forecast.subList(dayAfterStartIndex, dayAfterEndIndex)
 
-    // Ищем температуру на 12:00 для каждого дня
     val tomorrowAt12 = tomorrowForecast.find { it.dt == "12:00" }
     val dayAfterAt12 = dayAfterForecast.find { it.dt == "12:00" }
 
     return Pair(tomorrowAt12, dayAfterAt12)
 }
 
-/*@Composable
-fun TomorrowForecastSection(
-    tomorrowForecast: Forecast?,
-    dayAfterForecast: Forecast?
-) {
-    Column {
-        Text(
-            text = stringResource(id = R.string.forecast_tomorrow_day_after),
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Normal
-            ),
-            modifier = Modifier.padding(bottom = 12.dp)
-        )
-
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-            colors = CardDefaults.cardColors(containerColor = Color.White)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly
-            ) {
-                // Блок "Завтра"
-                if (tomorrowForecast != null) {
-                    TomorrowDayCard(
-                        title = stringResource(id = R.string.tomorrow),
-                        forecast = tomorrowForecast
-                    )
-                }
-
-                // Блок "Послезавтра"
-                if (dayAfterForecast != null) {
-                    TomorrowDayCard(
-                        title = stringResource(id = R.string.day_after_tomorrow),
-                        forecast = dayAfterForecast
-                    )
-                }
-            }
-        }
-    }
-}*/
-
 @Composable
 fun TomorrowForecastSection(
     tomorrowForecast: Forecast?,
-    dayAfterForecast: Forecast?
+    dayAfterForecast: Forecast?,
+    onForecastClick: (Forecast) -> Unit
 ) {
     Column {
         Text(
@@ -535,7 +319,8 @@ fun TomorrowForecastSection(
                     TomorrowDayCard(
                         title = stringResource(id = R.string.tomorrow),
                         forecast = tomorrowForecast,
-                        modifier = Modifier.weight(1f)  // ← weight здесь!
+                        modifier = Modifier.weight(1f),
+                        onClick = { onForecastClick(tomorrowForecast) }
                     )
                 }
 
@@ -543,7 +328,8 @@ fun TomorrowForecastSection(
                     TomorrowDayCard(
                         title = stringResource(id = R.string.day_after_tomorrow),
                         forecast = dayAfterForecast,
-                        modifier = Modifier.weight(1f)  // ← и здесь!
+                        modifier = Modifier.weight(1f),
+                        onClick = { onForecastClick(dayAfterForecast) }
                     )
                 }
             }
@@ -555,10 +341,11 @@ fun TomorrowForecastSection(
 fun TomorrowDayCard(
     title: String,
     forecast: Forecast,
-    modifier: Modifier = Modifier  // ← добавьте параметр modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 8.dp),  // ← применяем modifier
+        modifier = modifier.padding(horizontal = 8.dp).clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
@@ -578,71 +365,6 @@ fun TomorrowDayCard(
                 fontWeight = FontWeight.Normal
             )
         )
-    }
-}
-
-/*@Composable
-fun TomorrowDayCard(title: String, forecast: Forecast) {
-    Column(
-        modifier = Modifier
-            .weight(1f)
-            .padding(horizontal = 8.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = title,
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Normal
-            ),
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        Text(
-            text = "${forecast.temp.toInt()}°C",
-            style = TextStyle(
-                color = Color.Black,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.Normal
-            )
-        )
-    }
-}*/
-
-@Composable
-fun AttractionsSection(
-    attractions: List<Attraction>,
-    onAttractionClick: (String) -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp)
-    ) {
-        Column {
-            Text(
-                text = "Достопримечательности",
-                style = TextStyle(
-                    color = Color.DarkGray,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                items(attractions) { attraction ->
-                    AttractionCard(
-                        attraction = attraction,
-                        onClick = { onAttractionClick(attraction.id) },
-                        onFavouriteClick = { /* TODO: handle here if section is used */ },
-                        isFavourite = false
-                    )
-                }
-            }
-        }
     }
 }
 

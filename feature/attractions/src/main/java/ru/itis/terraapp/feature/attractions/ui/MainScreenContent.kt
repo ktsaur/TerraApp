@@ -16,11 +16,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
+import ru.itis.terraapp.feature.attractions.R
 import ru.itis.terraapp.feature.attractions.state.TempDetailsEffect
 import ru.itis.terraapp.feature.attractions.state.TempDetailsEvent
 import ru.itis.terraapp.feature.attractions.state.WeatherUIState
@@ -62,7 +64,7 @@ fun MainScreenFragmentContent(
                 modifier = Modifier.fillMaxWidth()
             )
             Text(
-                text = "Enter city",
+                text = stringResource(R.string.enter_city),
                 style = TextStyle(
                     color = Color.Gray,
                     fontSize = 13.sp
@@ -77,7 +79,7 @@ fun MainScreenFragmentContent(
                 },
                 modifier = Modifier.padding(top = 50.dp)
             ) {
-                Text(text = "Request")
+                Text(text = stringResource(R.string.request))
             }
         }
     }

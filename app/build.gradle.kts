@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.services)
     alias(libs.plugins.crashlytics.plugin)
+    alias(libs.plugins.perfs.plugin)
     kotlin("plugin.serialization") version "2.0.21"
 }
 
@@ -94,7 +95,7 @@ dependencies {
 
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-perf-ktx")
+    implementation("com.google.firebase:firebase-perf")
 
     //Hilt
     implementation(libs.hilt)

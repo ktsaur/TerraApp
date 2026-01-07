@@ -20,12 +20,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import ru.itis.terraapp.domain.model.Attraction
+import ru.itis.terraapp.feature.attractions.R
 import ru.itis.terraapp.feature.attractions.state.TempDetailsEffect
 import ru.itis.terraapp.feature.attractions.viewModel.MainScreenViewModel
 
@@ -39,13 +41,12 @@ fun AttractionDetailScreenRoute(
     val attraction = attractions.attractions.find { it.id == attractionId }
 
     if (attraction == null) {
-        // Обработка случая, когда достопримечательность не найдена
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = "Достопримечательность не найдена",
+                text = stringResource(R.string.attraction_not_found),
                 color = Color.Red,
                 fontSize = 18.sp
             )
@@ -53,7 +54,6 @@ fun AttractionDetailScreenRoute(
         return
     }
 
-    // ← Вот здесь вызываем реальный контент!
     AttractionDetailsScreenContent(attraction = attraction)
 }
 
@@ -62,12 +62,11 @@ fun AttractionDetailsScreenContent(attraction: Attraction) {
     Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
-                .padding(paddingValues)  // Обязательно для Scaffold
+                .padding(paddingValues)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             item {
-                // Изображение
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -81,14 +80,13 @@ fun AttractionDetailsScreenContent(attraction: Attraction) {
                         contentDescription = attraction.name,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(300.dp),  // Задайте фиксированную высоту или aspectRatio
+                            .height(300.dp),
                         contentScale = ContentScale.Crop
                     )
                 }
             }
 
             item {
-                // Информация
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     shape = RoundedCornerShape(12.dp),
@@ -108,22 +106,22 @@ fun AttractionDetailsScreenContent(attraction: Attraction) {
                             modifier = Modifier.padding(bottom = 12.dp)
                         )
                         Text(
-                            text = "Категория: ${attraction.category}",
+                            text = "${stringResource(R.string.category_label)} ${attraction.category}",
                             style = TextStyle(color = Color.Gray, fontSize = 16.sp, fontWeight = FontWeight.Medium),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = "Рейтинг: ${attraction.rating}",
+                            text = "${stringResource(R.string.rating_label)}  ${attraction.rating}",
                             style = TextStyle(color = Color.Gray, fontSize = 16.sp, fontWeight = FontWeight.Medium),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
-                            text = "Адрес: ${attraction.address}",
+                            text = "${stringResource(R.string.address_label)}  ${attraction.address}",
                             style = TextStyle(color = Color.Gray, fontSize = 16.sp, fontWeight = FontWeight.Medium),
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Text(
-                            text = "Описание:",
+                            text = stringResource(R.string.description),
                             style = TextStyle(color = Color.DarkGray, fontSize = 18.sp, fontWeight = FontWeight.SemiBold),
                             modifier = Modifier.padding(bottom = 8.dp)
                         )

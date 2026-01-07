@@ -22,7 +22,6 @@ import ru.itis.terraapp.feature.favourites.ui.FavouriteScreenContent
 import ru.itis.terraapp.feature.favourites.viewModel.FavouriteScreenViewModel
 import ru.itis.terraapp.feature.profile.state.ProfileEffect
 import ru.itis.terraapp.feature.profile.ui.ProfileRoute
-import ru.itis.terraapp.feature.profile.ui.ProfileScreenContent
 import ru.itis.terraapp.util.sharedViewModel
 
 object Routes {
