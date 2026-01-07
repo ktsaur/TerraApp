@@ -18,13 +18,13 @@ internal class DeleteUserUseCaseTest {
 
     @Before
     fun setUp() {
-        userRepository = mockk(relaxed = true) // relaxed = true, чтобы не бросало исключение при не замоканных вызовах
+        userRepository = mockk(relaxed = true)
         useCase = DeleteUserUseCase(userRepository)
     }
 
     @Test
     fun `should delete user successfully when repository succeeds`() = runTest {
-        // GIVEN - ничего мокать не нужно, т.к. метод возвращает Unit и не бросает исключение по умолчанию
+        // GIVEN
 
         // WHEN
         useCase(fakeUserId)

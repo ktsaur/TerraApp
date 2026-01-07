@@ -12,56 +12,13 @@ class RegisterUserUseCase @Inject constructor(
         username: String,
         email: String,
         password: String
-    ): RegisterResult {
-        if (username.isBlank() || email.isBlank() || password.isBlank()) {
-            return RegisterResult.EmptyFields
-        }
-        
-        if (!email.contains("@")) {
-            return RegisterResult.InvalidEmail
-        }
-        
-        if (password.length < 6 || !isValidPassword(password)) {
-            return RegisterResult.InvalidPassword
-        }
-
-        val existingEmails = userRepository.getAllEmails()
-        if (existingEmails?.contains(email) == true) {
-            return RegisterResult.EmailTaken
-        }
-
+    ): Int {
         val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
-
-        val existingUser = userRepository.getUserByEmailAndPassword(
-            email = email,
-            password = hashedPassword
-        )
-        if (existingUser != null) {
-            return RegisterResult.UserAlreadyExists
-        }
-
         val newUser = User(
             username = username,
             email = email,
             password = hashedPassword
         )
-        val userId = userRepository.insertUser(newUser)
-        
-        return RegisterResult.Success(userId)
-    }
-    
-    private fun isValidPassword(password: String): Boolean {
-        val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d).+$"
-        return password.matches(passwordPattern.toRegex())
+        return userRepository.insertUser(newUser)
     }
 }
-
-sealed class RegisterResult {
-    data class Success(val userId: Int) : RegisterResult()
-    object EmptyFields : RegisterResult()
-    object InvalidEmail : RegisterResult()
-    object InvalidPassword : RegisterResult()
-    object EmailTaken : RegisterResult()
-    object UserAlreadyExists : RegisterResult()
-}
-

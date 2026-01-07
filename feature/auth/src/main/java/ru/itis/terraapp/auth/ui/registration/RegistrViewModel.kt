@@ -11,14 +11,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.itis.terraapp.auth.R
+import ru.itis.terraapp.auth.utils.hashPassword
 import ru.itis.terraapp.base.AuthManager.AuthManager
-import ru.itis.terraapp.domain.usecase.auth.RegisterResult
+import ru.itis.terraapp.domain.usecase.auth.GetEmailsUseCase
 import ru.itis.terraapp.domain.usecase.auth.RegisterUserUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class RegistrViewModel @Inject constructor(
     private val registerUserUseCase: RegisterUserUseCase,
+    private val getEmailsUseCase: GetEmailsUseCase,
     private val authManager: AuthManager
 ): ViewModel() {
 
@@ -55,31 +57,37 @@ class RegistrViewModel @Inject constructor(
         val email = _uiState.value.email
         val password = _uiState.value.password
 
+        val hashPassword = hashPassword(password)
+
         viewModelScope.launch {
-            when (val result = registerUserUseCase(username, email, password)) {
-                is RegisterResult.Success -> {
-                    authManager.saveUserId(result.userId)
-                    _uiState.update { it.copy(registerResult = true) }
-                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.success_registration)))
-                    _effectFlow.tryEmit(RegistrEffect.NavigateToCurrentTemp)
-                }
-                is RegisterResult.EmptyFields -> {
-                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_fill_all_fields)))
-                }
-                is RegisterResult.InvalidEmail -> {
-                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_invalid_email)))
-                }
-                is RegisterResult.InvalidPassword -> {
-                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_invalid_password)))
-                }
-                is RegisterResult.EmailTaken -> {
+            if (username != "" && email != "" && password != "") {
+                val listEmails = getEmailsUseCase.invoke()
+                if (listEmails.contains(email) == true) {
                     _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.email_taken)))
+                    return@launch
                 }
-                is RegisterResult.UserAlreadyExists -> {
-                    _uiState.update { it.copy(registerResult = false) }
-                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_user_already_registered)))
+                if(!email.contains("@")) {
+                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_invalid_email)))
+                    return@launch
                 }
+                if (password.length < 6 || !isValidPassword(password = password)) {
+                    _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_invalid_password)))
+                    return@launch
+                }
+            } else {
+                _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.error_fill_all_fields)))
+                return@launch
             }
+            val userId = registerUserUseCase.invoke(username = username, email = email, password = hashPassword)
+            authManager.saveUserId(userId)
+            _uiState.update { it.copy(registerResult = true) }
+            _effectFlow.emit(RegistrEffect.ShowToast(message = context.getString(R.string.success_registration)))
+            _effectFlow.tryEmit(RegistrEffect.NavigateToCurrentTemp)
         }
+    }
+
+    private fun isValidPassword(password: String): Boolean {
+        val passwordPattern = "^(?=.*[A-Za-z])(?=.*\\d).+$"
+        return password.matches(passwordPattern.toRegex())
     }
 }

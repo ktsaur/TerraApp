@@ -6,13 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import ru.itis.terraapp.base.AuthManager.AuthManager
 import ru.itis.terraapp.navigation.BottomNavigation
 import ru.itis.terraapp.navigation.NavGraph
@@ -62,7 +59,7 @@ fun InitialNavigation(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomNavigation = currentRoute in listOf(
-        Screen.FavouritesScreen.route, Screen.MainScreen.route, Screen.Profile.route
+        Screen.FavouritesScreen.route, Screen.MainScreen.route, Screen.ProfileScreen.route
     )
 
     Scaffold(
