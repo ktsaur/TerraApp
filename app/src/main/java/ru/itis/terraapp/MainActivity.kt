@@ -3,45 +3,79 @@ package ru.itis.terraapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import ru.itis.terraapp.ui.theme.TerraAppTheme
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import ru.itis.terraapp.base.AuthManager.AuthManager
+import ru.itis.terraapp.navigation.BottomNavigation
+import ru.itis.terraapp.navigation.NavGraph
+import ru.itis.terraapp.navigation.NavigationManager
+import ru.itis.terraapp.navigation.Routes
+import ru.itis.terraapp.navigation.Screen
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var authManager: AuthManager
+
+    @Inject
+    lateinit var navigationManager: NavigationManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
-            TerraAppTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            val navController = rememberNavController()
+            navigationManager.setNavController(navController)
+            val userId = authManager.getUserId()
+            val startDestination = if (userId != null && userId != -1) {
+                Routes.BOTTOM_GRAPH
+            } else {
+                Routes.REGISTRATION
+            }
+            InitialNavigation(
+                startDestination = startDestination,
+                navController = navController
+            )
+        }
+        /*lifecycleScope.launch {
+            delay(5000)
+            throw IllegalStateException("Test crush")
+        }*/
+    }
+}
+
+@Composable
+fun InitialNavigation(
+    startDestination: String,
+    navController: NavHostController
+) {
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    val showBottomNavigation = currentRoute in listOf(
+        Screen.FavouritesScreen.route, Screen.MainScreen.route, Screen.Profile.route
+    )
+
+    Scaffold(
+        bottomBar = {
+            if (showBottomNavigation) {
+                BottomNavigation(navController = navController)
             }
         }
+    ) { padding ->
+        NavGraph(
+            navHostController = navController,
+            startDestination = startDestination
+        )
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    TerraAppTheme {
-        Greeting("Android")
-    }
-}

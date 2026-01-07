@@ -21,3 +21,11 @@ dependencyResolutionManagement {
 
 rootProject.name = "TerraApp"
 include(":app")
+include(":core:data")
+include(":core:domain")
+include(":feature:mainpage")
+include(":core:base")
+include(":feature:auth")
+include(":feature:attractions")
+include(":feature:favourites")
+include(":feature:profile")
