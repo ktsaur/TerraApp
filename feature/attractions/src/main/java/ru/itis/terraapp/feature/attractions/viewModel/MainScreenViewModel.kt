@@ -16,6 +16,7 @@ import ru.itis.terraapp.data.database.InceptionDatabase
 import ru.itis.terraapp.data.database.entity.QueryHistoryEntity
 import ru.itis.terraapp.data.database.entity.WeatherApiEntity
 import ru.itis.terraapp.base.AuthManager.AuthManager
+import ru.itis.terraapp.base.util.AnalyticsHelper
 import ru.itis.terraapp.data.util.toData
 import ru.itis.terraapp.data.util.toDomain
 import ru.itis.terraapp.domain.usecase.attractions.GetAttractionsByCityNameUseCase
@@ -43,6 +44,10 @@ class MainScreenViewModel @Inject constructor(
 
     private val _effectFlow = MutableSharedFlow<TempDetailsEffect>()
     val effectFlow = _effectFlow.asSharedFlow()
+
+    init{
+        logFavouriteScreenView()
+    }
 
     fun onEvent(event: TempDetailsEvent) {
         when(event) {
@@ -183,5 +188,14 @@ class MainScreenViewModel @Inject constructor(
                 )
             )
         }
+    }
+
+    fun logFavouriteScreenView() {
+        Log.i("fav", "до")
+        AnalyticsHelper.logScreenView(
+            screenName = "Favourites",
+            screenClass = "FavouriteScreenContent"
+        )
+        Log.i("fav", "после")
     }
 }

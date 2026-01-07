@@ -79,6 +79,17 @@ dependencies {
     implementation(libs.room.ktx)
     ksp(libs.room.ksp)
 
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.okhttp)
+    implementation(libs.converter.gson)
+
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebase.bom.get()}"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx")
+
     //Coil
     implementation(libs.coil.compose)
 }

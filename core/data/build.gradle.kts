@@ -73,5 +73,6 @@ dependencies {
     //Room
     implementation(libs.room)
     implementation(libs.room.ktx)
+    implementation(libs.kotlinx.serialization.json)
     ksp(libs.room.ksp)
 }
