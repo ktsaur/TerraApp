@@ -13,7 +13,6 @@ class RegisterUserUseCase @Inject constructor(
         email: String,
         password: String
     ): RegisterResult {
-        // Валидация
         if (username.isBlank() || email.isBlank() || password.isBlank()) {
             return RegisterResult.EmptyFields
         }
@@ -25,17 +24,14 @@ class RegisterUserUseCase @Inject constructor(
         if (password.length < 6 || !isValidPassword(password)) {
             return RegisterResult.InvalidPassword
         }
-        
-        // Проверка на существующий email
+
         val existingEmails = userRepository.getAllEmails()
         if (existingEmails?.contains(email) == true) {
             return RegisterResult.EmailTaken
         }
-        
-        // Хеширование пароля
+
         val hashedPassword = BCrypt.hashpw(password, BCrypt.gensalt())
-        
-        // Проверка на существующего пользователя
+
         val existingUser = userRepository.getUserByEmailAndPassword(
             email = email,
             password = hashedPassword
@@ -43,8 +39,7 @@ class RegisterUserUseCase @Inject constructor(
         if (existingUser != null) {
             return RegisterResult.UserAlreadyExists
         }
-        
-        // Создание нового пользователя
+
         val newUser = User(
             username = username,
             email = email,

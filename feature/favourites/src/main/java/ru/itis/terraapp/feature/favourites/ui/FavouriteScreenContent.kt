@@ -2,6 +2,7 @@ package ru.itis.terraapp.feature.favourites.ui
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -51,23 +52,74 @@ fun FavouriteScreenContent(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValue)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 16.dp)
         ) {
-            if (state.isLoading) {
-                Text(text = "Загрузка избранных...")
-            } else if (state.error != null) {
-                Text(text = "Ошибка загрузки избранных")
-            } else if (state.favourites.isEmpty()) {
-                Text(text = "Список избранных пуст")
-            } else {
-                LazyColumn {
-                    items(state.favourites, key = { it.id }) { attraction ->
-                        AttractionCard(
-                            attraction = attraction,
-                            onClick = { /* TODO: навигация к деталям достопримечательности */ },
-                            onFavouriteClick = { /* TODO: возможно удаление из избранного */ }
+            Text(
+                text = "Избранное",
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 24.dp, bottom = 24.dp)
+            )
+
+            when {
+                state.isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Загрузка...",
+                            style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
                         )
+                    }
+                }
+                state.error != null -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Ошибка загрузки",
+                            style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        )
+                    }
+                }
+                state.favourites.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Список избранных пуст",
+                            style = TextStyle(
+                                color = Color.Gray,
+                                fontSize = 14.sp
+                            )
+                        )
+                    }
+                }
+                else -> {
+                    LazyColumn(
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        items(state.favourites, key = { it.id }) { attraction ->
+                            AttractionCard(
+                                attraction = attraction,
+                                onClick = { /* TODO: навигация к деталям достопримечательности */ },
+                                onFavouriteClick = { /* TODO: возможно удаление из избранного */ }
+                            )
+                        }
                     }
                 }
             }
@@ -86,51 +138,37 @@ fun AttractionCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = attraction.imageUrl,
                 contentDescription = attraction.name,
                 modifier = Modifier
-                    .size(100.dp)
-                    .aspectRatio(1f)
+                    .size(80.dp)
+                    .aspectRatio(1f),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp),
+                    .weight(1f)
+                    .padding(start = 16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = attraction.name,
-                        style = TextStyle(
-                            color = Color.DarkGray,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp)
+                Text(
+                    text = attraction.name,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal
                     )
-                    /*IconButton(onClick = onFavouriteClick) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_favourite_outline),
-                            contentDescription = "Добавить в избранное",
-                            tint = Color.Red
-                        )
-                    }*/
-                }
+                )
             }
         }
     }

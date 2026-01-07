@@ -20,9 +20,16 @@ class UserRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getUserById(id: Int): User? {
+    override suspend fun deleteUser(userId: Int) {
+        withContext(ioDispatchers) {
+            val user = userDao.getUserById(userId).toUser()
+            userDao.deleteUser(user = user.toEntity())
+        }
+    }
+
+    override suspend fun getUserById(id: Int): User {
         return withContext(ioDispatchers) {
-            userDao.getUserById(id)?.toUser()
+            userDao.getUserById(id).toUser()
         }
     }
 

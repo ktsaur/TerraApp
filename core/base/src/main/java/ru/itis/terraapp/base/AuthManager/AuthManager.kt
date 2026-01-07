@@ -25,7 +25,7 @@ class AuthManager @Inject constructor(
         Log.i("AuthManager", "save userId = $userId")
     }
 
-    fun getUserId(): Int? {
+    fun getUserId(): Int {
         Log.i("AuthManager", "get userId = ${sharedPreferences.getInt(KEY_USERID, -1)}")
         return sharedPreferences.getInt(KEY_USERID, -1)
     }

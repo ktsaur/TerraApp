@@ -62,7 +62,7 @@ fun InitialNavigation(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val showBottomNavigation = currentRoute in listOf(
-        Screen.Graph.route, Screen.MainScreen.route
+        Screen.FavouritesScreen.route, Screen.MainScreen.route, Screen.Profile.route
     )
 
     Scaffold(

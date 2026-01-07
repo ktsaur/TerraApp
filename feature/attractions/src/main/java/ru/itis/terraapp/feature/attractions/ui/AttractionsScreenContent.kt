@@ -102,12 +102,13 @@ fun AttractionsScreenContent(
     }
     val tomorrowAndDayAfter = getTomorrowAndDayAfterForecast(state.forecast)
 
-    Scaffold(containerColor = Color.Blue) { padding ->
+    Scaffold { padding ->
         LazyColumn(
             modifier = Modifier
+                .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
                 TempMainCard(
@@ -126,13 +127,13 @@ fun AttractionsScreenContent(
                     Text(
                         text = "Достопримечательности",
                         style = TextStyle(
-                            color = Color.DarkGray,
+                            color = Color.Black,
                             fontSize = 20.sp,
-                            fontWeight = FontWeight.Medium
+                            fontWeight = FontWeight.Normal
                         ),
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 16.dp)
+                            .padding(top = 8.dp, bottom = 8.dp)
                     )
                 }
 
@@ -168,10 +169,11 @@ fun AttractionsScreenContent(
 
 @Composable
 fun ShimmerScreen() {
-    Scaffold(containerColor = Color.Blue) { padding ->
+    Scaffold { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(padding)
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -328,50 +330,43 @@ fun ItemRow(forecastModel: Forecast) {
 @Composable
 fun TempMainCard(city: String, weatherUIState: WeatherUIState) {
     Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 20.dp),
+        modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        border = BorderStroke(1.dp, Color.LightGray),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 24.dp, horizontal = 16.dp),
-            contentAlignment = Alignment.Center
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = stringResource(id = R.string.temp_in_city, city),
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Normal
-                    )
+            Text(
+                text = stringResource(id = R.string.temp_in_city, city),
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal
                 )
-                Text(
-                    text = "${weatherUIState.weather.currentTemp.toInt()}°C",
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontSize = 42.sp,
-                        fontWeight = FontWeight.SemiBold
-                    ),
-                    modifier = Modifier.padding(top = 12.dp)
-                )
-                Text(
-                    text = weatherUIState.weather.weatherDescription,
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Light
-                    ),
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
+            )
+            Text(
+                text = "${weatherUIState.weather.currentTemp.toInt()}°C",
+                style = TextStyle(
+                    color = Color.Black,
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.padding(top = 12.dp)
+            )
+            Text(
+                text = weatherUIState.weather.weatherDescription,
+                style = TextStyle(
+                    color = Color.Gray,
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Normal
+                ),
+                modifier = Modifier.padding(top = 8.dp)
+            )
         }
     }
 }
@@ -460,53 +455,96 @@ private fun getTomorrowAndDayAfterForecast(forecast: List<Forecast>): Pair<Forec
     return Pair(tomorrowAt12, dayAfterAt12)
 }
 
+/*@Composable
+fun TomorrowForecastSection(
+    tomorrowForecast: Forecast?,
+    dayAfterForecast: Forecast?
+) {
+    Column {
+        Text(
+            text = stringResource(id = R.string.forecast_tomorrow_day_after),
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            ),
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
+
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                // Блок "Завтра"
+                if (tomorrowForecast != null) {
+                    TomorrowDayCard(
+                        title = stringResource(id = R.string.tomorrow),
+                        forecast = tomorrowForecast
+                    )
+                }
+
+                // Блок "Послезавтра"
+                if (dayAfterForecast != null) {
+                    TomorrowDayCard(
+                        title = stringResource(id = R.string.day_after_tomorrow),
+                        forecast = dayAfterForecast
+                    )
+                }
+            }
+        }
+    }
+}*/
+
 @Composable
 fun TomorrowForecastSection(
     tomorrowForecast: Forecast?,
     dayAfterForecast: Forecast?
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 24.dp)
-    ) {
-        Column {
-            Text(
-                text = stringResource(id = R.string.forecast_tomorrow_day_after),
-                style = TextStyle(
-                    color = Color.DarkGray,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+    Column {
+        Text(
+            text = stringResource(id = R.string.forecast_tomorrow_day_after),
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Normal
+            ),
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
 
-            Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(12.dp),
-                elevation = CardDefaults.elevatedCardElevation(6.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(12.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            colors = CardDefaults.cardColors(containerColor = Color.White)
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly
             ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    // Блок "Завтра"
-                    if (tomorrowForecast != null) {
-                        TomorrowDayCard(
-                            title = stringResource(id = R.string.tomorrow),
-                            forecast = tomorrowForecast
-                        )
-                    }
+                if (tomorrowForecast != null) {
+                    TomorrowDayCard(
+                        title = stringResource(id = R.string.tomorrow),
+                        forecast = tomorrowForecast,
+                        modifier = Modifier.weight(1f)  // ← weight здесь!
+                    )
+                }
 
-                    // Блок "Послезавтра"
-                    if (dayAfterForecast != null) {
-                        TomorrowDayCard(
-                            title = stringResource(id = R.string.day_after_tomorrow),
-                            forecast = dayAfterForecast
-                        )
-                    }
+                if (dayAfterForecast != null) {
+                    TomorrowDayCard(
+                        title = stringResource(id = R.string.day_after_tomorrow),
+                        forecast = dayAfterForecast,
+                        modifier = Modifier.weight(1f)  // ← и здесь!
+                    )
                 }
             }
         }
@@ -514,42 +552,62 @@ fun TomorrowForecastSection(
 }
 
 @Composable
-fun TomorrowDayCard(title: String, forecast: Forecast) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(0.5f)
-            .padding(horizontal = 8.dp),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.Blue.copy(alpha = 0.1f)
-        )
+fun TomorrowDayCard(
+    title: String,
+    forecast: Forecast,
+    modifier: Modifier = Modifier  // ← добавьте параметр modifier
+) {
+    Column(
+        modifier = modifier.padding(horizontal = 8.dp),  // ← применяем modifier
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = title,
-                style = TextStyle(
-                    color = Color.DarkGray,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium
-                ),
-                modifier = Modifier.padding(bottom = 8.dp)
+        Text(
+            text = title,
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = "${forecast.temp.toInt()}°C",
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Normal
             )
-            Text(
-                text = "${forecast.temp.toInt()}°C",
-                style = TextStyle(
-                    color = Color.DarkGray,
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.SemiBold
-                )
-            )
-        }
+        )
     }
 }
+
+/*@Composable
+fun TomorrowDayCard(title: String, forecast: Forecast) {
+    Column(
+        modifier = Modifier
+            .weight(1f)
+            .padding(horizontal = 8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = title,
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.Normal
+            ),
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        Text(
+            text = "${forecast.temp.toInt()}°C",
+            style = TextStyle(
+                color = Color.Black,
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Normal
+            )
+        )
+    }
+}*/
 
 @Composable
 fun AttractionsSection(
@@ -600,53 +658,50 @@ fun AttractionCard(
             .fillMaxWidth()
             .clickable(onClick = onClick),
         shape = RoundedCornerShape(12.dp),
-        elevation = CardDefaults.elevatedCardElevation(6.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(12.dp),
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             AsyncImage(
                 model = attraction.imageUrl,
                 contentDescription = attraction.name,
                 modifier = Modifier
-                    .size(100.dp)
-                    .aspectRatio(1f)
+                    .size(80.dp)
+                    .aspectRatio(1f),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
             )
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 12.dp),
+                    .weight(1f)
+                    .padding(start = 16.dp),
                 verticalArrangement = Arrangement.Center
             ) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = attraction.name,
-                        style = TextStyle(
-                            color = Color.DarkGray,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.SemiBold
-                        ),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 8.dp)
+                Text(
+                    text = attraction.name,
+                    style = TextStyle(
+                        color = Color.Black,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Normal
                     )
-                    IconButton(onClick = onFavouriteClick) {
-                        Icon(
-                            painter = painterResource(
-                                id = if (isFavourite) R.drawable.ic_favourite_filled else R.drawable.ic_favourite_outline
-                            ),
-                            contentDescription = if (isFavourite) "Убрать из избранного" else "Добавить в избранное",
-                            tint = if (isFavourite) Color.Red else Color.LightGray
-                        )
-                    }
-                }
+                )
+            }
+            IconButton(
+                onClick = onFavouriteClick,
+                modifier = Modifier.size(40.dp)
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (isFavourite) R.drawable.ic_favourite_filled else R.drawable.ic_favourite_outline
+                    ),
+                    contentDescription = if (isFavourite) "Убрать из избранного" else "Добавить в избранное",
+                    tint = if (isFavourite) Color.Red else Color.Gray,
+                    modifier = Modifier.size(24.dp)
+                )
             }
         }
     }

@@ -59,7 +59,7 @@ fun AttractionDetailScreenRoute(
 
 @Composable
 fun AttractionDetailsScreenContent(attraction: Attraction) {
-    Scaffold(containerColor = Color.Blue) { paddingValues ->
+    Scaffold { paddingValues ->
         LazyColumn(
             modifier = Modifier
                 .padding(paddingValues)  // Обязательно для Scaffold

@@ -20,12 +20,15 @@ import ru.itis.terraapp.feature.attractions.ui.MainScreenRoute
 import ru.itis.terraapp.feature.attractions.viewModel.MainScreenViewModel
 import ru.itis.terraapp.feature.favourites.ui.FavouriteScreenContent
 import ru.itis.terraapp.feature.favourites.viewModel.FavouriteScreenViewModel
+import ru.itis.terraapp.feature.profile.state.ProfileEffect
+import ru.itis.terraapp.feature.profile.ui.ProfileRoute
+import ru.itis.terraapp.feature.profile.ui.ProfileScreenContent
 import ru.itis.terraapp.util.sharedViewModel
 
 object Routes {
     const val AUTHORIZATION = "authorization"
     const val REGISTRATION = "registration"
-    const val GRAPH = "graph"
+    const val PROFILE = "profile_screen"
     const val BOTTOM_GRAPH = "bottom_graph"
     const val MAIN_NAVIGATION = "main_nav"
     const val MAIN_SCREEN = "main_screen"
@@ -35,7 +38,7 @@ object Routes {
 }
 
 sealed class Screen(val route: String) {
-    object Graph : Screen(Routes.GRAPH)
+    object Profile : Screen(Routes.PROFILE)
     object Registration : Screen(Routes.REGISTRATION)
     object Authorization : Screen(Routes.AUTHORIZATION)
     object MainScreen : Screen(Routes.MAIN_SCREEN)
@@ -179,6 +182,22 @@ fun NavGraph(
                     navBackStackEntry = backStackEntry
                 )
                 FavouriteScreenContent(viewModel = viewModel)
+            }
+            composable(route = Screen.Profile.route) { backStackEntry ->
+                ProfileRoute(onNavigate = { effect ->
+                    when (effect) {
+                        is ProfileEffect.NavigateToLogin -> {
+                            navHostController.navigate(Screen.Authorization.route)
+                        }
+                        is ProfileEffect.ShowToast -> {
+                            Toast.makeText(
+                                context,
+                                effect.message,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                })
             }
         }
     }

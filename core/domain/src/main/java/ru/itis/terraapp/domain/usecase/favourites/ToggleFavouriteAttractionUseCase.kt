@@ -8,10 +8,6 @@ import javax.inject.Inject
 class ToggleFavouriteAttractionUseCase @Inject constructor(
     private val favouriteAttractionsRepository: FavouriteAttractionsRepository
 ) {
-
-    /**
-     * Возвращает новое состояние избранного после переключения.
-     */
     suspend operator fun invoke(attraction: Attraction, userId: Int): Boolean {
         val isCurrentlyFavourite = favouriteAttractionsRepository.isFavourite(attraction.id, userId)
         if (isCurrentlyFavourite) {

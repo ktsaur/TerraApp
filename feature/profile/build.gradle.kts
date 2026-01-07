@@ -1,28 +1,20 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.crashlytics.plugin)
     kotlin("plugin.serialization") version "2.0.21"
 }
 
 android {
-    namespace = "ru.itis.terraapp"
+    namespace = "ru.itis.terraapp.feature.profile"
     compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "ru.itis.terraapp"
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        vectorDrawables {
-            useSupportLibrary = true
-        }
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     buildTypes {
@@ -38,9 +30,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
     buildFeatures {
         buildConfig = true
         viewBinding = true
@@ -49,24 +38,24 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.8"
     }
-    packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 
 dependencies {
+
+
     //Core
     implementation(project(path=":core:base"))
     implementation(project(path=":core:data"))
     implementation(project(path=":core:domain"))
 
-    //Feature
-    implementation(project(path=":feature:auth"))
-    implementation(project(path=":feature:attractions"))
-    implementation(project(path=":feature:favourites"))
-    implementation(project(path=":feature:profile"))
+    //Firebase
+    implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebase.bom.get()}"))
+    implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-crashlytics-ktx")
+    implementation("com.google.firebase:firebase-perf-ktx")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -89,13 +78,6 @@ dependencies {
 
     implementation(libs.androidx.fragment)
 
-    //Firebase
-    implementation(platform("com.google.firebase:firebase-bom:${libs.versions.firebase.bom.get()}"))
-
-    implementation("com.google.firebase:firebase-analytics-ktx")
-    implementation("com.google.firebase:firebase-crashlytics-ktx")
-    implementation("com.google.firebase:firebase-perf-ktx")
-
     //Hilt
     implementation(libs.hilt)
     implementation(libs.hilt.navigation)
@@ -115,4 +97,7 @@ dependencies {
     implementation(libs.room)
     implementation(libs.room.ktx)
     ksp(libs.room.ksp)
+
+    //Coil
+    implementation(libs.coil.compose)
 }

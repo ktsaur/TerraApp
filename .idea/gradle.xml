@@ -19,6 +19,7 @@
             <option value="$PROJECT_DIR$/feature/auth" />
             <option value="$PROJECT_DIR$/feature/favourites" />
             <option value="$PROJECT_DIR$/feature/mainpage" />
+            <option value="$PROJECT_DIR$/feature/profile" />
           </set>
         </option>
         <option name="resolveExternalAnnotations" value="false" />
