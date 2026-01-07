@@ -131,19 +131,27 @@ Firebase интегрирован для аналитики, краш-репор
 
 Analytics: Автоматически собирает события открытия экранов (в init ViewModel: AnalyticsHelper.logScreenView(screenName, screenClass))
 
+
 <img width="1470" height="837" alt="Image" src="https://github.com/user-attachments/assets/bbf794f8-1187-4674-9f97-8aadda9e2d75" />
+
 
 Crashlytics: Автоматически отправляет краши (инициализация в TerraApp). В консоли видны отчёты о крашах с стек-трейсом.
 
+
 <img width="1470" height="837" alt="Image" src="https://github.com/user-attachments/assets/13ee0f8a-7b64-42ad-89e4-f03a06acb216" />
+
 
 Performance Monitoring:сетевые запросы (Retrofit), рендеринг экранов
 
+
 <img width="1470" height="837" alt="Image" src="https://github.com/user-attachments/assets/acd9debd-baf3-4272-8a08-07c78c93242b" />
+
 
 <img width="1470" height="837" alt="Image" src="https://github.com/user-attachments/assets/7d634fc4-5d74-45cf-92b6-6877c45140ba" />
 
+
 <img width="1470" height="837" alt="Image" src="https://github.com/user-attachments/assets/84f0fa03-72da-49d8-ab31-9e8cd5bf28c7" />
+
 
 Ссылка на гугл диск с скринкастом приложения: https://drive.google.com/drive/folders/1FZJ5qQCoQHN0bmL5ZqoYHyJNdTrh9FYn?usp=sharing
 
